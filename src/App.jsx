@@ -6,8 +6,9 @@ const App = () => {
 
   return (
     <>
-      <h1>Inventory</h1>
-      <Auth/>
+      <div className='App'>
+        <Auth/>
+      </div>
     </>
   )
 }
