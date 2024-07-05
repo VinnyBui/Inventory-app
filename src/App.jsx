@@ -1,13 +1,15 @@
-import { useState } from 'react'
+import React, { useState } from 'react';
+import { Auth } from './components/auth';
 
-function App() {
+const App = () => {
 
 
   return (
     <>
-      <h1>Hello</h1>
+      <h1>Inventory</h1>
+      <Auth/>
     </>
   )
 }
 
-export default App
+export default App;
