@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { auth } from './config/firebase';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './components/ui/theme-provider';
 import Dashboard from './components/dashboard';
-
+import Authorize from './components/authorize';
 
 const App = () => {
   return (
-    <>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <Dashboard/>
-      </ThemeProvider>
-    </>
-  )
-}
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <Router>
+        <Routes>
+          <Route path="/authorize" element={<Authorize />} />
+          <Route path="/" element={<Dashboard />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
+  );
+};
 
 export default App;
