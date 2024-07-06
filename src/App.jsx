@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './components/ui/theme-provider';
 import Dashboard from './components/dashboard';
 import Authorize from './components/authorize';
+import PrivateRoute from './components/privateRoute';
 
 const App = () => {
   return (
@@ -10,7 +11,7 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/authorize" element={<Authorize />} />
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<PrivateRoute element={<Dashboard />} />} />
         </Routes>
       </Router>
     </ThemeProvider>
