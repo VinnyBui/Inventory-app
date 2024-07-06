@@ -35,33 +35,22 @@ const App = () => {
                 <MenubarItem>
                   Add <MenubarShortcut>⌘T</MenubarShortcut>
                 </MenubarItem>
+                <MenubarSeparator />
                 <MenubarItem>
                   Remove <MenubarShortcut>⇧⌘Z</MenubarShortcut>
                 </MenubarItem>
-                <MenubarSeparator />
-                <MenubarSub>
-                  <MenubarSubTrigger>Find</MenubarSubTrigger>
-                  <MenubarSubContent>
-                    <MenubarItem>Search</MenubarItem>
-                  </MenubarSubContent>
-                </MenubarSub>
-                <MenubarSeparator />
               </MenubarContent>
             </MenubarMenu>
 
   
             <MenubarMenu>
-              <MenubarTrigger>Profiles</MenubarTrigger>
+              <MenubarTrigger>Account</MenubarTrigger>
               <MenubarContent>
-                <MenubarRadioGroup value="benoit">
-                  <MenubarRadioItem value="andy">Andy</MenubarRadioItem>
-                  <MenubarRadioItem value="benoit">Benoit</MenubarRadioItem>
-                  <MenubarRadioItem value="Luis">Luis</MenubarRadioItem>
-                </MenubarRadioGroup>
+                <MenubarItem inset>Sign In With Google</MenubarItem>
                 <MenubarSeparator />
-                <MenubarItem inset>Edit...</MenubarItem>
+                <MenubarItem inset>Sign Up</MenubarItem>
                 <MenubarSeparator />
-                <MenubarItem inset>Add Profile...</MenubarItem>
+                <MenubarItem inset>Sign In</MenubarItem>
               </MenubarContent>
             </MenubarMenu>
           </Menubar>
