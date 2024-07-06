@@ -2,38 +2,26 @@ import { useState, useEffect } from 'react';
 import { auth } from '../config/firebase';
 import { ModeToggle } from './mode-toggle';
 import { useNavigate, Link } from 'react-router-dom';
-
-  import {
-    Bell,
-    CircleUser,
-    Home,
-    LineChart,
-    Menu,
-    Package,
-    Package2,
-    Search,
-    ShoppingCart,
-    Users,
-  } from "lucide-react"
-  import { Badge } from "@/components/ui/badge"
-  import { Button } from "@/components/ui/button"
-  import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-  } from "@/components/ui/card"
-  import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
-  import { Input } from "@/components/ui/input"
-  import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Display } from './displayInventory';
+import {
+  CircleUser,
+  Home,
+  Menu,
+  Package,
+  Package2,
+  Search,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const Dashboard = () => {
     const [user, setUser] = useState(null);
@@ -67,6 +55,17 @@ const Dashboard = () => {
         setSelectedTab(item);
     };
 
+    const renderContent = () => {
+      switch (selectedTab){
+        case 'dashboard':
+          return <div>Its dashboard content</div>;
+        case 'inventory':
+            return <Display/>;
+        default:
+          return <div>Its dashboard content</div>;
+      }
+    };
+
     return(
         <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
         <div className="hidden border-r bg-muted/40 md:block">
@@ -91,11 +90,11 @@ const Dashboard = () => {
                     </Link>
                     <Link
             
-                      onClick={() => handleSelection('products')}
+                      onClick={() => handleSelection('inventory')}
                       className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${selectedTab === 'products' ? 'bg-muted text-primary' : 'text-muted-foreground hover:text-primary'}`}
                 >
                   <Package className="h-4 w-4" />
-                  Products{" "}
+                  inventory{" "}
                 </Link>
               </nav>
             </div>
@@ -115,27 +114,26 @@ const Dashboard = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="flex flex-col">
-                <nav className="grid gap-2 text-lg font-medium">
+                <nav className="grid gap-4 text-lg font-medium">
                   <Link
-                    href="#"
                     className="flex items-center gap-2 text-lg font-semibold"
                   >
                     <Package2 className="h-6 w-6" />
-                    <span className="sr-only">Acme Inc</span>
+                    <span className="sr-only">Do you ssee me</span>
                   </Link>
                   <Link
-                    href="#"
+                    onClick={() => handleSelection('dashboard')}
                     className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
                   >
                     <Home className="h-5 w-5" />
                     Dashboard
                   </Link>
                   <Link
-                    href="#"
+                    onClick={() => handleSelection('inventory')}
                     className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
                   >
                     <Package className="h-5 w-5" />
-                    Products
+                    inventory
                   </Link>
                 </nav>
               </SheetContent>
@@ -167,9 +165,11 @@ const Dashboard = () => {
             </DropdownMenu>
           </header>
           <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-            <div className="flex items-center">
+            {renderContent()}
+            {/* <div className="flex items-center">
               <h1 className="text-lg font-semibold md:text-2xl">Inventory</h1>
             </div>
+
             <div
               className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm" x-chunk="dashboard-02-chunk-1"
             >
@@ -182,7 +182,8 @@ const Dashboard = () => {
                 </p>
                 <Button className="mt-4">Add Product</Button>
               </div>
-            </div>
+            </div> */}
+
           </main>
         </div>
       </div>
