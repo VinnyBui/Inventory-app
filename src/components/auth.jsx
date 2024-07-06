@@ -4,7 +4,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithP
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-export const Auth = () => {
+export const Authorize = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null); // State for handling errors
@@ -79,4 +79,4 @@ export const Auth = () => {
     );
 };
 
-export default Auth;
+export default Authorize;

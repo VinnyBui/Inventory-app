@@ -1,24 +1,32 @@
-import React, { useState } from 'react';
-import { Auth } from './components/auth';
+import React, { useState, useEffect } from 'react';
+import { Authorize } from './components/auth';
+import { auth } from './config/firebase';
 // import { Display } from './components/displayInventory';
 import {
   Menubar,
-  MenubarCheckboxItem,
   MenubarContent,
   MenubarItem,
   MenubarMenu,
-  MenubarRadioGroup,
-  MenubarRadioItem,
   MenubarSeparator,
   MenubarShortcut,
-  MenubarSub,
-  MenubarSubContent,
-  MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/ui/menubar"
 
 const App = () => {
+  const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    // Listen for authentication state changes
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <>
@@ -46,14 +54,34 @@ const App = () => {
             <MenubarMenu>
               <MenubarTrigger>Account</MenubarTrigger>
               <MenubarContent>
-                <MenubarItem inset>Sign In With Google</MenubarItem>
-                <MenubarSeparator />
-                <MenubarItem inset>Sign Up</MenubarItem>
-                <MenubarSeparator />
-                <MenubarItem inset>Sign In</MenubarItem>
+                {user ? (
+                  <>
+                    <MenubarItem inset onClick={() => auth.signOut()}>Sign Out</MenubarItem>
+                  </>
+                ) : (
+                  <>
+                    <MenubarItem inset>Sign In With Google</MenubarItem>
+                    <MenubarSeparator />
+                    <MenubarItem inset>Sign Up</MenubarItem>
+                    <MenubarSeparator />
+                    <MenubarItem inset>Sign In</MenubarItem>
+                  </>
+                )}
               </MenubarContent>
             </MenubarMenu>
           </Menubar>
+
+          <div className="mt-4">
+            {!user ? (
+              <Authorize />
+            ) : (
+              <div>
+                {/* Your authenticated content goes here */}
+                <p>Welcome, {user.displayName}!</p>
+              </div>
+            )}
+          </div>
+
         </div>
       </div>
     </>
