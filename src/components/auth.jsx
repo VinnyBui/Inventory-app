@@ -51,7 +51,7 @@ export const Authorize = () => {
 
     return (
         <>
-            <div className='flex flex-col items-center justify-center h-screen '>
+            <div className='flex flex-col items-center'>
                 <div className='w-1/5 space-y-4'>
                     <Input
                         type="email"

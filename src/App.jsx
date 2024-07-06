@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Authorize } from './components/auth';
 import { auth } from './config/firebase';
+import { ThemeProvider } from './components/ui/theme-provider';
+import { ModeToggle } from './components/mode-toggle';
 // import { Display } from './components/displayInventory';
 import {
   Menubar,
@@ -30,60 +32,67 @@ const App = () => {
 
   return (
     <>
-      <div className='App'>
-        <div className='Dashboard'>
-          <Menubar>
-            <MenubarMenu>
-              <MenubarTrigger>Home</MenubarTrigger>
-            </MenubarMenu>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <div className='App'>
+          <div className='Dashboard'>
+            <Menubar>
+              <MenubarMenu>
+                <MenubarTrigger>Home</MenubarTrigger>
+                <MenubarContent>
+                  <MenubarItem>
+                    <ModeToggle/>
+                  </MenubarItem>
+                </MenubarContent>
+              </MenubarMenu>
 
-            <MenubarMenu>
-              <MenubarTrigger>Edit</MenubarTrigger>
-              <MenubarContent>
-                <MenubarItem>
-                  Add <MenubarShortcut>⌘T</MenubarShortcut>
-                </MenubarItem>
-                <MenubarSeparator />
-                <MenubarItem>
-                  Remove <MenubarShortcut>⇧⌘Z</MenubarShortcut>
-                </MenubarItem>
-              </MenubarContent>
-            </MenubarMenu>
+              <MenubarMenu>
+                <MenubarTrigger>Edit</MenubarTrigger>
+                <MenubarContent>
+                  <MenubarItem>
+                    Add <MenubarShortcut>⌘T</MenubarShortcut>
+                  </MenubarItem>
+                  <MenubarSeparator />
+                  <MenubarItem>
+                    Remove <MenubarShortcut>⇧⌘Z</MenubarShortcut>
+                  </MenubarItem>
+                </MenubarContent>
+              </MenubarMenu>
 
-  
-            <MenubarMenu>
-              <MenubarTrigger>Account</MenubarTrigger>
-              <MenubarContent>
-                {user ? (
-                  <>
-                    <MenubarItem inset onClick={() => auth.signOut()}>Sign Out</MenubarItem>
-                  </>
-                ) : (
-                  <>
-                    <MenubarItem inset>Sign In With Google</MenubarItem>
-                    <MenubarSeparator />
-                    <MenubarItem inset>Sign Up</MenubarItem>
-                    <MenubarSeparator />
-                    <MenubarItem inset>Sign In</MenubarItem>
-                  </>
-                )}
-              </MenubarContent>
-            </MenubarMenu>
-          </Menubar>
+    
+              <MenubarMenu>
+                <MenubarTrigger>Account</MenubarTrigger>
+                <MenubarContent>
+                  {user ? (
+                    <>
+                      <MenubarItem inset onClick={() => auth.signOut()}>Sign Out</MenubarItem>
+                    </>
+                  ) : (
+                    <>
+                      <MenubarItem inset>Sign In With Google</MenubarItem>
+                      <MenubarSeparator />
+                      <MenubarItem inset>Sign Up</MenubarItem>
+                      <MenubarSeparator />
+                      <MenubarItem inset>Sign In</MenubarItem>
+                    </>
+                  )}
+                </MenubarContent>
+              </MenubarMenu>
+            </Menubar>
 
-          <div className="mt-4">
-            {!user ? (
-              <Authorize />
-            ) : (
-              <div>
-                {/* Your authenticated content goes here */}
-                <p>Welcome, {user.displayName}!</p>
-              </div>
-            )}
+            <div className="mt-4">
+              {!user ? (
+                <Authorize />
+              ) : (
+                <div>
+                  {/* Your authenticated content goes here */}
+                  <p>Welcome, {user.displayName}!</p>
+                </div>
+              )}
+            </div>
+
           </div>
-
         </div>
-      </div>
+      </ThemeProvider>
     </>
   )
 }
