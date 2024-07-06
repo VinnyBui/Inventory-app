@@ -20,7 +20,7 @@ export const Auth = () => {
         try{
             await createUserWithEmailAndPassword(auth, email, password);
         } catch (err) {
-            console.error("Error signing in:", err);
+            console.error("Error signing up:", err);
         };
     };
 

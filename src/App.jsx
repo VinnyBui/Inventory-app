@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Auth } from './components/auth';
+// import { Display } from './components/displayInventory';
 
 const App = () => {
 
@@ -8,6 +9,9 @@ const App = () => {
     <>
       <div className='App'>
         <Auth/>
+        {/* <div className='container'>
+        <Display />
+      </div> */}
       </div>
     </>
   )
