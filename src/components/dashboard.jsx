@@ -37,6 +37,8 @@ import { useNavigate, Link } from 'react-router-dom';
 
 const Dashboard = () => {
     const [user, setUser] = useState(null);
+    const [selectedTab, setSelectedTab] = useState('dashboard');
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -61,6 +63,10 @@ const Dashboard = () => {
         }
       };
 
+    const handleSelection = (item) => {
+        setSelectedTab(item);
+    };
+
     return(
         <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
         <div className="hidden border-r bg-muted/40 md:block">
@@ -77,15 +83,16 @@ const Dashboard = () => {
             <div className="flex-1">
               <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
                 <Link
-                  href="#"
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-                >
-                  <Home className="h-4 w-4" />
-                  Dashboard
-                </Link>
-                <Link
-                  href="#"
-                  className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
+                    onClick={() => handleSelection('dashboard')}
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${selectedTab === 'dashboard' ? 'bg-muted text-primary' : 'text-muted-foreground hover:text-primary'}`}
+                    >
+                      <Home className="h-4 w-4" />
+                      Dashboard
+                    </Link>
+                    <Link
+            
+                      onClick={() => handleSelection('products')}
+                      className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${selectedTab === 'products' ? 'bg-muted text-primary' : 'text-muted-foreground hover:text-primary'}`}
                 >
                   <Package className="h-4 w-4" />
                   Products{" "}
