@@ -3,6 +3,7 @@ import { auth } from '../config/firebase';
 import { ModeToggle } from './mode-toggle';
 import { useNavigate, Link } from 'react-router-dom';
 import { Display } from './displayInventory';
+import  AddForm from './addForm';
 import {
   CircleUser,
   Home,
@@ -54,8 +55,8 @@ const Dashboard = () => {
 
   const handleSelection = (item) => {
     setSelectedTab(item);
-    if (item === 'inventory') {
-      setInventoryExpanded(!inventoryExpanded);
+    if (item === 'inventory' || item === 'view' || item === 'add' || item === 'edit') {
+      setInventoryExpanded(true);
     } else {
       setInventoryExpanded(false);
     }
@@ -67,6 +68,10 @@ const Dashboard = () => {
         return <div>It's dashboard content</div>;
       case 'inventory':
         return <Display />;
+      case 'view':
+          return <Display />;
+      case 'add':
+          return <AddForm/>;
       default:
         return <div>It's dashboard content</div>;
     }
@@ -114,15 +119,7 @@ const Dashboard = () => {
               {inventoryExpanded && (
                 <div className="ml-6">
                   <Link
-                    className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                      selectedTab === 'add'
-                        ? 'bg-muted text-primary'
-                        : 'text-muted-foreground hover:text-primary'
-                    }`}
-                  >
-                    Add
-                  </Link>
-                  <Link
+                    onClick={() => handleSelection('view')}
                     className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                       selectedTab === 'view'
                         ? 'bg-muted text-primary'
@@ -130,6 +127,16 @@ const Dashboard = () => {
                     }`}
                   >
                     View
+                  </Link>
+                  <Link
+                    onClick={() => handleSelection('add')}
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                      selectedTab === 'add'
+                        ? 'bg-muted text-primary'
+                        : 'text-muted-foreground hover:text-primary'
+                    }`}
+                  >
+                    Add
                   </Link>
                   <Link
                     className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
@@ -184,15 +191,7 @@ const Dashboard = () => {
                 {inventoryExpanded && (
                   <div className="ml-6">
                     <Link
-                      className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                        selectedTab === 'add'
-                          ? 'bg-muted text-primary'
-                          : 'text-muted-foreground hover:text-primary'
-                      }`}
-                    >
-                      Add
-                    </Link>
-                    <Link
+                      onClick={() => handleSelection('view')}
                       className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                         selectedTab === 'view'
                           ? 'bg-muted text-primary'
@@ -200,6 +199,16 @@ const Dashboard = () => {
                       }`}
                     >
                       View
+                    </Link>
+                    <Link
+                      onClick={() => handleSelection('add')}
+                      className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                        selectedTab === 'add'
+                          ? 'bg-muted text-primary'
+                          : 'text-muted-foreground hover:text-primary'
+                      }`}
+                    >
+                      Add
                     </Link>
                     <Link
                       className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
