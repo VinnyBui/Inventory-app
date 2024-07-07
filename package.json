@@ -10,7 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@faker-js/faker": "^8.4.1",
+    "@nextui-org/react": "^2.4.2",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-dropdown-menu": "^2.1.1",
     "@radix-ui/react-menubar": "^1.1.1",
@@ -19,6 +22,7 @@
     "clsx": "^2.1.1",
     "faker": "^5.5.3",
     "firebase": "^10.12.3",
+    "framer-motion": "^11.2.13",
     "lucide-react": "^0.400.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
