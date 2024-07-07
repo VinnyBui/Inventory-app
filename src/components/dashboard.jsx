@@ -26,6 +26,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [selectedTab, setSelectedTab] = useState('dashboard');
+  const [inventoryExpanded, setInventoryExpanded] = useState(false);
 
   const navigate = useNavigate();
 
@@ -53,6 +54,11 @@ const Dashboard = () => {
 
   const handleSelection = (item) => {
     setSelectedTab(item);
+    if (item === 'inventory') {
+      setInventoryExpanded(!inventoryExpanded);
+    } else {
+      setInventoryExpanded(false);
+    }
   };
 
   const renderContent = () => {
@@ -105,6 +111,37 @@ const Dashboard = () => {
                 <Package className="h-4 w-4" />
                 Inventory
               </Link>
+              {inventoryExpanded && (
+                <div className="ml-6">
+                  <Link
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                      selectedTab === 'add'
+                        ? 'bg-muted text-primary'
+                        : 'text-muted-foreground hover:text-primary'
+                    }`}
+                  >
+                    Add
+                  </Link>
+                  <Link
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                      selectedTab === 'view'
+                        ? 'bg-muted text-primary'
+                        : 'text-muted-foreground hover:text-primary'
+                    }`}
+                  >
+                    View
+                  </Link>
+                  <Link
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                      selectedTab === 'edit'
+                        ? 'bg-muted text-primary'
+                        : 'text-muted-foreground hover:text-primary'
+                    }`}
+                  >
+                    Edit
+                  </Link>
+                </div>
+              )}
             </nav>
           </div>
         </div>
@@ -144,6 +181,37 @@ const Dashboard = () => {
                   <Package className="h-5 w-5" />
                   Inventory
                 </Link>
+                {inventoryExpanded && (
+                  <div className="ml-6">
+                    <Link
+                      className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                        selectedTab === 'add'
+                          ? 'bg-muted text-primary'
+                          : 'text-muted-foreground hover:text-primary'
+                      }`}
+                    >
+                      Add
+                    </Link>
+                    <Link
+                      className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                        selectedTab === 'view'
+                          ? 'bg-muted text-primary'
+                          : 'text-muted-foreground hover:text-primary'
+                      }`}
+                    >
+                      View
+                    </Link>
+                    <Link
+                      className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                        selectedTab === 'edit'
+                          ? 'bg-muted text-primary'
+                          : 'text-muted-foreground hover:text-primary'
+                      }`}
+                    >
+                      Edit
+                    </Link>
+                  </div>
+                )}
               </nav>
             </SheetContent>
           </Sheet>
