@@ -1,7 +1,7 @@
 import { React, useEffect, useState } from 'react';
 import { db } from "../config/firebase";
 import { getDocs, collection } from "firebase/firestore";
-
+import {AddDummyData} from './dummyData';
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -47,6 +47,7 @@ export const Display = () => {
     return (
         <>
             <div>
+                <AddDummyData />
                 <Card>
                     <CardHeader>
                         <CardTitle>Inventory</CardTitle>
@@ -66,7 +67,7 @@ export const Display = () => {
                         </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {items.map((item) => (
+                            {items.slice(0, 10).map((item) => (
                                 <TableRow key={item.id}>
                                 <TableCell>
                                     <div className="font-medium">{item.Name}</div>
