@@ -2,7 +2,6 @@ import { React, useEffect, useState } from 'react';
 import { db } from "../config/firebase";
 import { getDocs, collection } from "firebase/firestore";
 import { AddDummyData } from './dummyData';
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,7 +9,6 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -27,14 +25,12 @@ import {
     PaginationLink,
     PaginationNext,
     PaginationPrevious,
-  } from "@/components/ui/pagination"
+  } from "@/components/ui/pagination";
   
-
-
 export const Display = () => {
     const [items, setItems] = useState([]);
-
     const itemsCollectionRef = collection(db, "Items");
+
 
     useEffect(() => {
         const getItems = async () => {
@@ -75,7 +71,7 @@ export const Display = () => {
                         </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {items.slice(0, 10).map((item) => (
+                            {items.slice(10, 20).map((item) => (
                                 <TableRow key={item.id}>
                                     <TableCell>
                                         <div className="font-medium">{item.Name}</div>
