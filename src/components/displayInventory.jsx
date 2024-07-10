@@ -3,19 +3,19 @@ import { db } from "../config/firebase";
 import { getDocs, collection } from "firebase/firestore";
 import { AddDummyData } from './dummyData';
 import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-    CardDescription,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
 } from "@/components/ui/card";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import {
     Pagination,
@@ -25,8 +25,8 @@ import {
     PaginationLink,
     PaginationNext,
     PaginationPrevious,
-} from "@/components/ui/pagination";
-
+  } from "@/components/ui/pagination";
+  
 export const Display = () => {
     const [items, setItems] = useState([]);
     const itemsCollectionRef = collection(db, "Items");
@@ -52,23 +52,79 @@ export const Display = () => {
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
-      };
+    };
 
-    
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(items.length / itemsPerPage);
+
+    const renderPageNumbers = () => {
+        const pages = [];
+        const maxVisiblePages = 4; // Number of pages to show
+
+        // Calculate start and end page
+        let startPage = Math.max(currentPage - 2, 1);
+        let endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+
+        // Adjust startPage if we are at the end of the page list
+        if (endPage - startPage < maxVisiblePages - 1) {
+            startPage = Math.max(endPage - maxVisiblePages + 1, 1);
+        }
+
+        if (startPage > 1) {
+            pages.push(
+                <PaginationItem key={1}>
+                    <PaginationLink href="#" onClick={() => handlePageChange(1)}>
+                        1
+                    </PaginationLink>
+                </PaginationItem>
+            );
+            if (startPage > 2) {
+                pages.push(
+                    <PaginationItem key="ellipsis-start">
+                        <PaginationEllipsis />
+                    </PaginationItem>
+                );
+            }
+        }
+
+        for (let page = startPage; page <= endPage; page++) {
+            pages.push(
+                <PaginationItem key={page}>
+                    <PaginationLink href="#" onClick={() => handlePageChange(page)} className={currentPage === page ? 'bg-muted text-primary' : ''}>
+                        {page}
+                    </PaginationLink>
+                </PaginationItem>
+            );
+        }
+
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                pages.push(
+                    <PaginationItem key="ellipsis-end">
+                        <PaginationEllipsis />
+                    </PaginationItem>
+                );
+            }
+            pages.push(
+                <PaginationItem key={totalPages}>
+                    <PaginationLink href="#" onClick={() => handlePageChange(totalPages)}>
+                        {totalPages}
+                    </PaginationLink>
+                </PaginationItem>
+            );
+        }
+
+        return pages;
+    };
 
     return (
         <div >
-            {/* <AddDummyData /> */}
             <Card>
                 <CardHeader>
                     <CardTitle>Inventory</CardTitle>
                     <CardDescription>Amount of items: {items.length}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Table >
+                    <Table>
                         <TableHeader>
                         <TableRow>
                             <TableHead>Name</TableHead>
@@ -80,7 +136,7 @@ export const Display = () => {
                         </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {currentItems.map((item) => (
+                            {items.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item) => (
                                 <TableRow key={item.id}>
                                     <TableCell>
                                         <div className="font-medium">{item.Name}</div>
@@ -103,17 +159,11 @@ export const Display = () => {
                 <Pagination>
                     <PaginationContent>
                         <PaginationItem>
-                            <PaginationPrevious href="#" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+                            <PaginationPrevious href="#" onClick={() => handlePageChange(currentPage - 1)} />
                         </PaginationItem>
-                        {[...Array(Math.ceil(items.length / itemsPerPage)).keys()].map((page) => (
-                            <PaginationItem key={page + 1}>
-                                <PaginationLink href="#" onClick={() => handlePageChange(page + 1)} className={currentPage === page + 1 ? 'bg-muted text-primary' : ''}>
-                                    {page + 1}
-                                </PaginationLink>
-                            </PaginationItem>
-                        ))}
+                        {renderPageNumbers()}
                         <PaginationItem>
-                            <PaginationNext href="#" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === Math.ceil(items.length / itemsPerPage)} />
+                            <PaginationNext href="#" onClick={() => handlePageChange(currentPage + 1)} />
                         </PaginationItem>
                     </PaginationContent>
                 </Pagination>
@@ -121,6 +171,5 @@ export const Display = () => {
         </div>
     );
 };
-
 
 export default Display;
