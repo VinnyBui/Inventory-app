@@ -3,19 +3,19 @@ import { db } from "../config/firebase";
 import { getDocs, collection } from "firebase/firestore";
 import { AddDummyData } from './dummyData';
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+    CardDescription,
 } from "@/components/ui/card";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/components/ui/table";
 import {
     Pagination,
@@ -25,8 +25,8 @@ import {
     PaginationLink,
     PaginationNext,
     PaginationPrevious,
-  } from "@/components/ui/pagination";
-  
+} from "@/components/ui/pagination";
+
 export const Display = () => {
     const [items, setItems] = useState([]);
     const itemsCollectionRef = collection(db, "Items");
@@ -67,7 +67,6 @@ export const Display = () => {
                             <TableHead className="hidden md:table-cell">Receiving</TableHead>
                             <TableHead className="hidden md:table-cell">Shipping</TableHead>
                             <TableHead className="text-right">Location</TableHead>
-                            {/* <TableHead className="text-right">Location</TableHead> */}
                         </TableRow>
                         </TableHeader>
                         <TableBody>
