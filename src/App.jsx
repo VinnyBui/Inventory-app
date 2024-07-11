@@ -5,6 +5,7 @@ import { NextUIProvider } from '@nextui-org/react';
 import Dashboard from './components/dashboard';
 import Authorize from './components/authorize';
 import PrivateRoute from './components/privateRoute';
+import { Toaster } from "@/components/ui/toaster"
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
             <Route path="/authorize" element={<Authorize />} />
             <Route path="/" element={<PrivateRoute element={<Dashboard />} />} />
           </Routes>
+          <Toaster />
         </Router>
       </ThemeProvider>
     </NextUIProvider>
