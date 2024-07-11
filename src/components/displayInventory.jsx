@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/table";
 import PaginationComponent from './pagination';
 
-export const Display = () => {
+export const Display = ({ searchQuery }) => {
     const [items, setItems] = useState([]);
     const itemsCollectionRef = collection(db, "Items");
     const [currentPage, setCurrentPage] = useState(1);
@@ -43,6 +43,12 @@ export const Display = () => {
 
         getItems();
     }, []);
+
+    const filteredItems = items.filter(item =>
+        item.Name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.Serial.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.Location.toLowerCase().includes(searchQuery.toLowerCase())
+      );
 
     const handleDelete = async (id) => {
         try {
@@ -67,7 +73,7 @@ export const Display = () => {
             <Card>
                 <CardHeader>
                     <CardTitle>Inventory</CardTitle>
-                    <CardDescription>Amount of items: {items.length}</CardDescription>
+                    <CardDescription>Amount of items: {filteredItems.length}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Table>
@@ -80,7 +86,7 @@ export const Display = () => {
                         </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {items.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item) => (
+                            {filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item) => (
                                 <TableRow key={item.id}>
                                     <TableCell>
                                         <div className="font-medium">{item.Name}</div>

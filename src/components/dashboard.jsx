@@ -31,6 +31,7 @@ const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState('dashboard');
   const [inventoryExpanded, setInventoryExpanded] = useState(false);
   const [shippingExpanded, setShippingExpanded] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const navigate = useNavigate();
 
@@ -57,16 +58,20 @@ const Dashboard = () => {
 
   const handleSelection = (item) => {
     setSelectedTab(item);
-    if (['inventory', 'add', 'edit', 'view'].includes(item)) {
+    if (['inventory', 'add'].includes(item)) {
       setInventoryExpanded(true);
     } else {
       setInventoryExpanded(false);
     }
-    if (['shipping', 'addShipping', 'editShipping'].includes(item)) { 
+    if (['shipping', 'addShipping'].includes(item)) { 
       setShippingExpanded(true);
     } else {
       setShippingExpanded(false);
     }
+  };
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
   };
 
   const renderContent = () => {
@@ -74,11 +79,11 @@ const Dashboard = () => {
       case 'dashboard':
         return <div>It's dashboard content</div>;
       case 'inventory':
-        return <Display />;
+        return <Display searchQuery={searchQuery} />;
       case 'add':
         return <AddForm />;
       case 'shipping':
-        return <DisplayShipping/>;
+        return <DisplayShipping searchQuery={searchQuery} />;
       case 'addShipping':
         return <AddShippingForm />;
       default:
@@ -254,6 +259,8 @@ const Dashboard = () => {
                 <Input
                   type="search"
                   placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={handleSearch}
                   className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
                 />
               </div>
