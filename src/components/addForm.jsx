@@ -17,19 +17,19 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 
 const FormSchema = z.object({
-    name: z.string().min(2, {
-      message: "Product name must be at least 2 characters.",
-    }),
-    amount: z.string().min(1, {
-      message: "Amount must be at least 1 character.",
-    }),
-    serial: z.string().min(5, {
-      message: "Serial number must be at least 5 characters.",
-    }),
-    location: z.string().min(1, {
-      message: "Location must be at least 1 character.",
-    }),
-  });
+  name: z.string().min(2, {
+    message: "Product name must be at least 2 characters.",
+  }),
+  amount: z.string().min(1, {
+    message: "Amount must be at least 1 character.",
+  }),
+  serial: z.string().min(5, {
+    message: "Serial number must be at least 5 characters.",
+  }),
+  location: z.string().min(1, {
+    message: "Location must be at least 1 character.",
+  }),
+});
 
 const InputForm = () => {
   const form = useForm({
@@ -54,7 +54,7 @@ const InputForm = () => {
 
     try {
       const itemsCollectionRef = collection(db, 'Items');
-      await addDoc(itemsCollectionRef, {
+      const docRef = await addDoc(itemsCollectionRef, {
         Name: data.name,
         Amount: data.amount,
         Serial: data.serial,
@@ -97,7 +97,7 @@ const InputForm = () => {
         />
         <FormField
           control={form.control}
-          name="serialNumber"
+          name="serial"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Serial Number</FormLabel>
