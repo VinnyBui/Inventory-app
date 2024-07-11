@@ -4,6 +4,7 @@ import { ModeToggle } from './mode-toggle';
 import { useNavigate, Link } from 'react-router-dom';
 import Display from './displayInventory';
 import AddForm from './addForm';
+import AddShippingForm from './addShippingForm';
 import {
   CircleUser,
   Home,
@@ -78,7 +79,7 @@ const Dashboard = () => {
       case 'shipping':
         return <div>It's shipping content</div>;
       case 'addShipping':
-        return <div>Add shipping content</div>;
+        return <AddShippingForm />;
       default:
         return <div>It's dashboard content</div>;
     }

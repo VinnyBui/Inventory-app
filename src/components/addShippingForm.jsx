@@ -25,19 +25,22 @@ const FormSchema = z.object({
   serial: z.string().min(5, {
     message: "Serial number must be at least 5 characters.",
   }),
-  location: z.string().min(1, {
-    message: "Location must be at least 1 character.",
+  company: z.string().min(1, {
+    message: "Company name must be at least 1 character.",
   }),
 });
 
-const AddForm = () => {
+const AddShippinForm = () => {
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       name: "",
       amount: "",
       serial: "",
-      location: "",
+      company: "",
+      PO: "",
+      tracking: "",
+      date:"",
     },
   });
 
@@ -52,12 +55,15 @@ const AddForm = () => {
     });
 
     try {
-      const itemsCollectionRef = collection(db, 'Items');
+      const itemsCollectionRef = collection(db, 'Shipping');
       const docRef = await addDoc(itemsCollectionRef, {
         Name: data.name,
         Amount: data.amount,
         Serial: data.serial,
-        Location: data.location,
+        Company: data.company,
+        PO: data.PO,
+        Tracking: data.tracking,
+        Date: data.date,
       });
       console.log("Document added with ID: ", docRef.id);
       form.reset(); 
@@ -111,12 +117,51 @@ const AddForm = () => {
           />
           <FormField
             control={form.control}
-            name="location"
+            name="company"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Location</FormLabel>
+                <FormLabel>Company</FormLabel>
                 <FormControl>
-                  <Input placeholder="G4" {...field} />
+                  <Input placeholder="IBuy" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="PO"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>PO</FormLabel>
+                <FormControl>
+                  <Input placeholder="PO" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="tracking"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tracking#</FormLabel>
+                <FormControl>
+                  <Input placeholder="IBuy" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>date</FormLabel>
+                <FormControl>
+                  <Input  type="date" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -129,4 +174,4 @@ const AddForm = () => {
   );
 }
 
-export default AddForm;
+export default AddShippinForm;
