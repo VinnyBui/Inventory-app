@@ -51,7 +51,9 @@ export const Display = () => {
     }, []);
 
     const handlePageChange = (page) => {
-        setCurrentPage(page);
+        if (page >= 1 && page <= Math.ceil(items.length / itemsPerPage)) {
+            setCurrentPage(page);
+        }
     };
 
     const totalPages = Math.ceil(items.length / itemsPerPage);
@@ -59,16 +61,16 @@ export const Display = () => {
     const renderPageNumbers = () => {
         const pages = [];
         const maxVisiblePages = 4; // Number of pages to show
-
+    
         // Calculate start and end page
         let startPage = Math.max(currentPage - 2, 1);
         let endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
-
+    
         // Adjust startPage if we are at the end of the page list
         if (endPage - startPage < maxVisiblePages - 1) {
             startPage = Math.max(endPage - maxVisiblePages + 1, 1);
         }
-
+    
         if (startPage > 1) {
             pages.push(
                 <PaginationItem key={1}>
@@ -85,7 +87,7 @@ export const Display = () => {
                 );
             }
         }
-
+    
         for (let page = startPage; page <= endPage; page++) {
             pages.push(
                 <PaginationItem key={page}>
@@ -95,7 +97,7 @@ export const Display = () => {
                 </PaginationItem>
             );
         }
-
+    
         if (endPage < totalPages) {
             if (endPage < totalPages - 1) {
                 pages.push(
@@ -112,7 +114,7 @@ export const Display = () => {
                 </PaginationItem>
             );
         }
-
+    
         return pages;
     };
 
@@ -128,10 +130,8 @@ export const Display = () => {
                         <TableHeader>
                         <TableRow>
                             <TableHead>Name</TableHead>
-                            <TableHead className="hidden sm:table-cell">SKU</TableHead>
                             <TableHead className="hidden sm:table-cell">Amount</TableHead>
-                            <TableHead className="hidden md:table-cell">Receiving</TableHead>
-                            <TableHead className="hidden md:table-cell">Shipping</TableHead>
+                            <TableHead className="hidden sm:table-cell">Serial#</TableHead>
                             <TableHead className="text-right">Location</TableHead>
                         </TableRow>
                         </TableHeader>
@@ -144,10 +144,8 @@ export const Display = () => {
                                             {item.email}
                                         </div>
                                     </TableCell>
-                                    <TableCell className="hidden sm:table-cell">{item.SKU}</TableCell>
                                     <TableCell className="hidden sm:table-cell">{item.Amount}</TableCell>
-                                    <TableCell className="hidden md:table-cell">{item.Receiving}</TableCell>
-                                    <TableCell className="hidden md:table-cell">{item.Shipping}</TableCell>
+                                    <TableCell className="hidden sm:table-cell">{item.SKU}</TableCell>
                                     <TableCell className="text-right">{item.Location}</TableCell>
                                 </TableRow>
                             ))}
