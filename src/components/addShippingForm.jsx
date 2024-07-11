@@ -28,9 +28,18 @@ const FormSchema = z.object({
   company: z.string().min(1, {
     message: "Company name must be at least 1 character.",
   }),
+  PO: z.string().min(1, {
+    message: "PO must be at least 1 character.",
+  }),
+  tracking: z.string().min(1, {
+    message: "Tracking number must be at least 1 character.",
+  }),
+  date: z.string().min(1, {
+    message: "Date must be at least 1 character.",
+  }),
 });
 
-const AddShippinForm = () => {
+const AddShippingForm = () => {
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -40,7 +49,7 @@ const AddShippinForm = () => {
       company: "",
       PO: "",
       tracking: "",
-      date:"",
+      date: "",
     },
   });
 
@@ -73,9 +82,9 @@ const AddShippinForm = () => {
   }
 
   return (
-    <div className="flex items-center justify-center ">
+    <div className="flex items-center justify-center">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-md space-y-6 e p-8 rounded shadow-md">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-md space-y-6 p-8 rounded shadow-md">
           <FormField
             control={form.control}
             name="name"
@@ -159,9 +168,9 @@ const AddShippinForm = () => {
             name="date"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>date</FormLabel>
+                <FormLabel>Date</FormLabel>
                 <FormControl>
-                  <Input  type="date" {...field} />
+                  <Input type="date" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -174,4 +183,4 @@ const AddShippinForm = () => {
   );
 }
 
-export default AddShippinForm;
+export default AddShippingForm;

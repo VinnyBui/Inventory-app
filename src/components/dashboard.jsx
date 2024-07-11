@@ -5,6 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import Display from './displayInventory';
 import AddForm from './addForm';
 import AddShippingForm from './addShippingForm';
+import DisplayShipping from './displayShipping';
 import {
   CircleUser,
   Home,
@@ -77,7 +78,7 @@ const Dashboard = () => {
       case 'add':
         return <AddForm />;
       case 'shipping':
-        return <div>It's shipping content</div>;
+        return <DisplayShipping/>;
       case 'addShipping':
         return <AddShippingForm />;
       default:
