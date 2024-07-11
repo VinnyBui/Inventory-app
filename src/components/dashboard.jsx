@@ -28,6 +28,7 @@ const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [selectedTab, setSelectedTab] = useState('dashboard');
   const [inventoryExpanded, setInventoryExpanded] = useState(false);
+  const [shippingExpanded, setShippingExpanded] = useState(false);
 
   const navigate = useNavigate();
 
@@ -59,6 +60,11 @@ const Dashboard = () => {
     } else {
       setInventoryExpanded(false);
     }
+    if (['shipping', 'addShipping', 'editShipping'].includes(item)) { 
+      setShippingExpanded(true);
+    } else {
+      setShippingExpanded(false);
+    }
   };
 
   const renderContent = () => {
@@ -73,7 +79,11 @@ const Dashboard = () => {
       case 'edit':
         return <Display />;
       case 'shipping':
-          return <div>It's shiping content</div>;
+        return <div>It's shipping content</div>;
+      case 'addShipping':
+        return <div>Add shipping content</div>;
+      case 'editShipping':
+        return <div>Edit content</div>;
       default:
         return <div>It's dashboard content</div>;
     }
@@ -161,9 +171,33 @@ const Dashboard = () => {
                     : 'text-muted-foreground hover:text-primary'
                 }`}
               >
-              <Package2 className="h-4 w-4" />
+                <Package2 className="h-4 w-4" />
                 Shipping
               </Link>
+              {shippingExpanded && (
+                <div className="ml-6">
+                  <Link
+                    onClick={() => handleSelection('addShipping')}
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                      selectedTab === 'addShipping'
+                        ? 'bg-muted text-primary'
+                        : 'text-muted-foreground hover:text-primary'
+                    }`}
+                  >
+                    Add
+                  </Link>
+                  <Link
+                    onClick={() => handleSelection('editShipping')}
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                      selectedTab === 'editShipping'
+                        ? 'bg-muted text-primary'
+                        : 'text-muted-foreground hover:text-primary'
+                    }`}
+                  >
+                    Edit
+                  </Link>
+                </div>
+              )}
             </nav>
           </div>
         </div>
@@ -240,11 +274,39 @@ const Dashboard = () => {
                 <Link
                   to="#"
                   onClick={() => handleSelection('shipping')}
-                  className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                    selectedTab === 'shipping'
+                      ? 'bg-muted text-primary'
+                      : 'text-muted-foreground hover:text-primary'
+                  }`}
                 >
-                <Package2 className="h-4 w-4" />
+                  <Package2 className="h-4 w-4" />
                   Shipping
                 </Link>
+                {shippingExpanded && (
+                  <div className="ml-6">
+                    <Link
+                      onClick={() => handleSelection('addShipping')}
+                      className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                        selectedTab === 'addShipping'
+                          ? 'bg-muted text-primary'
+                          : 'text-muted-foreground hover:text-primary'
+                      }`}
+                    >
+                      Add
+                    </Link>
+                    <Link
+                      onClick={() => handleSelection('editShipping')}
+                      className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                        selectedTab === 'editShipping'
+                          ? 'bg-muted text-primary'
+                          : 'text-muted-foreground hover:text-primary'
+                      }`}
+                    >
+                      Edit
+                    </Link>
+                  </div>
+                )}
               </nav>
             </SheetContent>
           </Sheet>
