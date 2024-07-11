@@ -1,5 +1,5 @@
 import { db } from "../config/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 import { faker } from '@faker-js/faker';
 import { Button } from "@/components/ui/button";
 import { useState } from 'react';
