@@ -89,7 +89,7 @@ const InputForm = () => {
               <FormItem>
                 <FormLabel>Amount</FormLabel>
                 <FormControl>
-                  <Input placeholder="1" {...field} />
+                  <Input type="number" placeholder="1" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
