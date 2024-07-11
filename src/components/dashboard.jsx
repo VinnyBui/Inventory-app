@@ -72,18 +72,13 @@ const Dashboard = () => {
       case 'dashboard':
         return <div>It's dashboard content</div>;
       case 'inventory':
-      case 'view':
         return <Display />;
       case 'add':
         return <AddForm />;
-      case 'edit':
-        return <Display />;
       case 'shipping':
         return <div>It's shipping content</div>;
       case 'addShipping':
         return <div>Add shipping content</div>;
-      case 'editShipping':
-        return <div>Edit content</div>;
       default:
         return <div>It's dashboard content</div>;
     }
@@ -131,16 +126,6 @@ const Dashboard = () => {
               {inventoryExpanded && (
                 <div className="ml-6">
                   <Link
-                    onClick={() => handleSelection('view')}
-                    className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                      selectedTab === 'view'
-                        ? 'bg-muted text-primary'
-                        : 'text-muted-foreground hover:text-primary'
-                    }`}
-                  >
-                    View
-                  </Link>
-                  <Link
                     onClick={() => handleSelection('add')}
                     className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                       selectedTab === 'add'
@@ -149,16 +134,6 @@ const Dashboard = () => {
                     }`}
                   >
                     Add
-                  </Link>
-                  <Link
-                    onClick={() => handleSelection('edit')}
-                    className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                      selectedTab === 'edit'
-                        ? 'bg-muted text-primary'
-                        : 'text-muted-foreground hover:text-primary'
-                    }`}
-                  >
-                    Edit
                   </Link>
                 </div>
               )}
@@ -185,16 +160,6 @@ const Dashboard = () => {
                     }`}
                   >
                     Add
-                  </Link>
-                  <Link
-                    onClick={() => handleSelection('editShipping')}
-                    className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                      selectedTab === 'editShipping'
-                        ? 'bg-muted text-primary'
-                        : 'text-muted-foreground hover:text-primary'
-                    }`}
-                  >
-                    Edit
                   </Link>
                 </div>
               )}
@@ -240,16 +205,6 @@ const Dashboard = () => {
                 {inventoryExpanded && (
                   <div className="ml-6">
                     <Link
-                      onClick={() => handleSelection('view')}
-                      className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                        selectedTab === 'view'
-                          ? 'bg-muted text-primary'
-                          : 'text-muted-foreground hover:text-primary'
-                      }`}
-                    >
-                      View
-                    </Link>
-                    <Link
                       onClick={() => handleSelection('add')}
                       className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                         selectedTab === 'add'
@@ -258,16 +213,6 @@ const Dashboard = () => {
                       }`}
                     >
                       Add
-                    </Link>
-                    <Link
-                      onClick={() => handleSelection('edit')}
-                      className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                        selectedTab === 'edit'
-                          ? 'bg-muted text-primary'
-                          : 'text-muted-foreground hover:text-primary'
-                      }`}
-                    >
-                      Edit
                     </Link>
                   </div>
                 )}
@@ -294,16 +239,6 @@ const Dashboard = () => {
                       }`}
                     >
                       Add
-                    </Link>
-                    <Link
-                      onClick={() => handleSelection('editShipping')}
-                      className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                        selectedTab === 'editShipping'
-                          ? 'bg-muted text-primary'
-                          : 'text-muted-foreground hover:text-primary'
-                      }`}
-                    >
-                      Edit
                     </Link>
                   </div>
                 )}
