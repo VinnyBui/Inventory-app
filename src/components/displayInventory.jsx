@@ -1,8 +1,9 @@
 // src/components/displayInventory.jsx
 import React, { useEffect, useState } from 'react';
 import { db } from "../config/firebase";
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, collection ,doc, deleteDoc} from "firebase/firestore";
 import { AddDummyData } from './dummyData';
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -43,6 +44,16 @@ export const Display = () => {
         getItems();
     }, []);
 
+    const handleDelete = async (id) => {
+        try {
+          await deleteDoc(doc(db, "Items", id));
+          setItems(items.filter((item) => item.id !== id));
+          console.log(`Document with ID ${id} deleted`);
+        } catch (err) {
+          console.error("Error deleting document:", err);
+        }
+      };
+    
     const handlePageChange = (page) => {
         if (page >= 1 && page <= Math.ceil(items.length / itemsPerPage)) {
             setCurrentPage(page);
@@ -80,6 +91,14 @@ export const Display = () => {
                                     <TableCell className="hidden sm:table-cell">{item.Amount}</TableCell>
                                     <TableCell className="hidden sm:table-cell">{item.Serial}</TableCell>
                                     <TableCell className="text-right">{item.Location}</TableCell>
+                                    <TableCell className="text-right">
+                                        <Button
+                                            variant="destructive"
+                                            onClick={() => handleDelete(item.id)}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
