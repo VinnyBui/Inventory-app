@@ -1,4 +1,5 @@
-import { React, useEffect, useState } from 'react';
+// src/components/displayInventory.jsx
+import React, { useEffect, useState } from 'react';
 import { db } from "../config/firebase";
 import { getDocs, collection } from "firebase/firestore";
 import { AddDummyData } from './dummyData';
@@ -17,16 +18,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-  } from "@/components/ui/pagination";
-  
+import PaginationComponent from './pagination';
+
 export const Display = () => {
     const [items, setItems] = useState([]);
     const itemsCollectionRef = collection(db, "Items");
@@ -58,68 +51,8 @@ export const Display = () => {
 
     const totalPages = Math.ceil(items.length / itemsPerPage);
 
-    const renderPageNumbers = () => {
-        const pages = [];
-        const maxVisiblePages = 4; // Number of pages to show
-    
-        // Calculate start and end page
-        let startPage = Math.max(currentPage - 2, 1);
-        let endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
-    
-        // Adjust startPage if we are at the end of the page list
-        if (endPage - startPage < maxVisiblePages - 1) {
-            startPage = Math.max(endPage - maxVisiblePages + 1, 1);
-        }
-    
-        if (startPage > 1) {
-            pages.push(
-                <PaginationItem key={1}>
-                    <PaginationLink href="#" onClick={() => handlePageChange(1)}>
-                        1
-                    </PaginationLink>
-                </PaginationItem>
-            );
-            if (startPage > 2) {
-                pages.push(
-                    <PaginationItem key="ellipsis-start">
-                        <PaginationEllipsis />
-                    </PaginationItem>
-                );
-            }
-        }
-    
-        for (let page = startPage; page <= endPage; page++) {
-            pages.push(
-                <PaginationItem key={page}>
-                    <PaginationLink href="#" onClick={() => handlePageChange(page)} className={currentPage === page ? 'bg-muted text-primary' : ''}>
-                        {page}
-                    </PaginationLink>
-                </PaginationItem>
-            );
-        }
-    
-        if (endPage < totalPages) {
-            if (endPage < totalPages - 1) {
-                pages.push(
-                    <PaginationItem key="ellipsis-end">
-                        <PaginationEllipsis />
-                    </PaginationItem>
-                );
-            }
-            pages.push(
-                <PaginationItem key={totalPages}>
-                    <PaginationLink href="#" onClick={() => handlePageChange(totalPages)}>
-                        {totalPages}
-                    </PaginationLink>
-                </PaginationItem>
-            );
-        }
-    
-        return pages;
-    };
-
     return (
-        <div >
+        <div>
             <Card>
                 <CardHeader>
                     <CardTitle>Inventory</CardTitle>
@@ -153,19 +86,11 @@ export const Display = () => {
                     </Table>
                 </CardContent>
             </Card>
-            <div>
-                <Pagination>
-                    <PaginationContent>
-                        <PaginationItem>
-                            <PaginationPrevious href="#" onClick={() => handlePageChange(currentPage - 1)} />
-                        </PaginationItem>
-                        {renderPageNumbers()}
-                        <PaginationItem>
-                            <PaginationNext href="#" onClick={() => handlePageChange(currentPage + 1)} />
-                        </PaginationItem>
-                    </PaginationContent>
-                </Pagination>
-            </div>
+            <PaginationComponent 
+                currentPage={currentPage} 
+                totalPages={totalPages} 
+                onPageChange={handlePageChange} 
+            />
         </div>
     );
 };
