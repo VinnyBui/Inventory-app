@@ -15,12 +15,9 @@ export const AddDummyData = () => {
             try {
                 await addDoc(itemsCollectionRef, {
                     Name: faker.commerce.productName(),
-                    SKU: faker.random.alphaNumeric(8),
                     Amount: faker.datatype.number({ min: 1, max: 100 }),
-                    Receiving: faker.datatype.boolean(),
-                    Shipping: faker.datatype.boolean(),
+                    Serial: faker.datatype.uuid(),
                     Location: faker.address.city(),
-                    createdAt: serverTimestamp(),
                 });
                 console.log(`Document ${i + 1} added`);
             } catch (e) {

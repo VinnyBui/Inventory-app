@@ -55,7 +55,7 @@ const Dashboard = () => {
 
   const handleSelection = (item) => {
     setSelectedTab(item);
-    if (item === 'inventory' || item === 'view' || item === 'add' || item === 'edit') {
+    if (['inventory', 'add', 'edit', 'view'].includes(item)) {
       setInventoryExpanded(true);
     } else {
       setInventoryExpanded(false);

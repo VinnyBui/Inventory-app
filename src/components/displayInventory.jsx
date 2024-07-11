@@ -78,7 +78,7 @@ export const Display = () => {
                                         </div>
                                     </TableCell>
                                     <TableCell className="hidden sm:table-cell">{item.Amount}</TableCell>
-                                    <TableCell className="hidden sm:table-cell">{item.SKU}</TableCell>
+                                    <TableCell className="hidden sm:table-cell">{item.Serial}</TableCell>
                                     <TableCell className="text-right">{item.Location}</TableCell>
                                 </TableRow>
                             ))}
