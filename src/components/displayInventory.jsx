@@ -48,15 +48,15 @@ export const Display = ({ searchQuery }) => {
         item.Name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.Serial.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.Location.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+    );
 
     const handleDelete = async (id) => {
         try {
-          await deleteDoc(doc(db, "Items", id));
-          setItems(items.filter((item) => item.id !== id));
-          console.log(`Document with ID ${id} deleted`);
+            await deleteDoc(doc(db, "Items", id));
+            setItems(items.filter((item) => item.id !== id));
+            console.log(`Document with ID ${id} deleted`);
         } catch (err) {
-          console.error("Error deleting document:", err);
+            console.error("Error deleting document:", err);
         }
       };
     
