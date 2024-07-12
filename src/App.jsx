@@ -1,25 +1,26 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './components/ui/theme-provider';
-import { NextUIProvider } from '@nextui-org/react';
-import Dashboard from './components/dashboard';
-import Authorize from './components/authorize';
 import PrivateRoute from './components/privateRoute';
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/toaster";
+
+// Lazy load the components
+const Dashboard = lazy(() => import('./components/dashboard'));
+const Authorize = lazy(() => import('./components/authorize'));
 
 const App = () => {
   return (
-    <NextUIProvider>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <Router>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <Router basename="/Inventory-app">
+        <Suspense fallback={<div>Loading...</div>}>
           <Routes>
             <Route path="/authorize" element={<Authorize />} />
             <Route path="/" element={<PrivateRoute element={<Dashboard />} />} />
           </Routes>
           <Toaster />
-        </Router>
-      </ThemeProvider>
-    </NextUIProvider>
+        </Suspense>
+      </Router>
+    </ThemeProvider>
   );
 };
 
