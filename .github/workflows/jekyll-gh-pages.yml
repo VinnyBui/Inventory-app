@@ -24,6 +24,11 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Configure Git user
+        run: |
+          git config --global user.email "vinh.bui0101@gmail.com"
+          git config --global user.name "Vinh"
+
       - name: Clean old gh-pages branch
         run: |
           git fetch origin
