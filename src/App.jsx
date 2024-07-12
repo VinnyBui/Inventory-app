@@ -11,7 +11,7 @@ const Authorize = lazy(() => import('./components/authorize'));
 const App = () => {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <Router basename="/Inventory-app">
+      <Router>
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
             <Route path="/authorize" element={<Authorize />} />
