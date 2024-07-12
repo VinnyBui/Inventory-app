@@ -4,9 +4,10 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [react()],
-  define: {
-    'process.env': {
-      NEXT_PUBLIC_API_KEY: JSON.stringify(process.env.NEXT_PUBLIC_API_KEY), 
+  server: {
+    headers: {
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'require-corp',
     },
   },
   resolve: {

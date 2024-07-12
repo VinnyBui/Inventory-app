@@ -1,43 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth, googleProvider } from '../config/firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
-import { Input } from "@/components/ui/input";
+import { auth, googleProvider, db } from '../config/firebase';
+import { signInWithPopup, signOut } from 'firebase/auth';
+import { doc, getDoc } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 
 export const Authorize = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Initialize useNavigate
-
-  const signIn = async () => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate('/'); // Redirect to Dashboard
-    } catch (err) {
-      console.error("Error signing in:", err);
-      setError(err.message);
-    }
-  };
-
-  const signUp = async () => {
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      navigate('/'); // Redirect to Dashboard
-    } catch (err) {
-      console.error("Error signing up:", err);
-      setError(err.message);
-    }
-  };
+  const navigate = useNavigate();
+  const signInInProgress = useRef(false);
 
   const signInWithGoogle = async () => {
+    if (signInInProgress.current) return;
+    signInInProgress.current = true;
+
     try {
-      await signInWithPopup(auth, googleProvider);
-      navigate('/'); // Redirect to Dashboard
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+
+      const emailDoc = await getDoc(doc(db, "allowedEmails", user.email));
+      if (!emailDoc.exists()) {
+        await signOut(auth);
+        setError("Access denied. Please use an authorized account.");
+      } else {
+        navigate('/'); // Redirect to Dashboard
+      }
     } catch (err) {
-      console.error("Error signing in with Google:", err);
-      setError(err.message);
+      if (err.code === 'auth/popup-closed-by-user') {
+        console.log("Popup closed by user");
+        setError("Popup was closed before completing sign in.");
+      } else if (err.code === 'auth/cancelled-popup-request') {
+        console.log("Cancelled popup request");
+        setError("Multiple sign-in attempts detected. Please try again.");
+      } else {
+        console.error("Error signing in with Google:", err);
+        setError(err.message);
+      }
+    } finally {
+      signInInProgress.current = false;
     }
   };
 
@@ -49,16 +49,6 @@ export const Authorize = () => {
     <>
       <div className='flex flex-col items-center justify-center h-screen'>
         <div className='w-1/5 space-y-4'>
-          <Input
-            type="email"
-            placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)} />
-          <Input
-            type="password"
-            placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)} />
-          <Button variant="outline" onClick={signIn}>Login</Button>
-          <Button variant="outline" onClick={signUp}>Sign Up</Button>
           <Button variant="outline" onClick={signInWithGoogle}>Sign In With Google</Button>
         </div>
       </div>
