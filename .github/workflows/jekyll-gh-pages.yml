@@ -24,6 +24,15 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Clean old gh-pages branch
+        run: |
+          git fetch origin
+          git checkout --orphan gh-pages
+          git reset --hard
+          git commit --allow-empty -m "Initial commit"
+          git push origin gh-pages
+          git checkout main
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
