@@ -10,7 +10,7 @@ const Authorize = lazy(() => import('./components/authorize'));
 
 const App = () => {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <Router>
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
