@@ -80,9 +80,9 @@ export const Display = ({ searchQuery }) => {
                         <TableHeader>
                         <TableRow>
                             <TableHead>Name</TableHead>
-                            <TableHead className="hidden sm:table-cell">Amount</TableHead>
-                            <TableHead className="hidden sm:table-cell">Serial#</TableHead>
-                            <TableHead className="text-right">Location</TableHead>
+                            <TableHead className="">Amount</TableHead>
+                            <TableHead className="">Serial#</TableHead>
+                            <TableHead className="">Location</TableHead>
                         </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -90,13 +90,10 @@ export const Display = ({ searchQuery }) => {
                                 <TableRow key={item.id}>
                                     <TableCell>
                                         <div className="font-medium">{item.Name}</div>
-                                        <div className="hidden text-sm text-muted-foreground md:inline">
-                                            {item.email}
-                                        </div>
                                     </TableCell>
-                                    <TableCell className="hidden sm:table-cell">{item.Amount}</TableCell>
-                                    <TableCell className="hidden sm:table-cell">{item.Serial}</TableCell>
-                                    <TableCell className="text-right">{item.Location}</TableCell>
+                                    <TableCell className="">{item.Amount}</TableCell>
+                                    <TableCell className="">{item.Serial}</TableCell>
+                                    <TableCell className="">{item.Location}</TableCell>
                                     <TableCell className="text-right">
                                         <Button
                                             variant="destructive"

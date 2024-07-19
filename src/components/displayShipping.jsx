@@ -83,12 +83,12 @@ export const DisplayShipping = ({ searchQuery }) => {
                         <TableHeader>
                         <TableRow>
                             <TableHead>Name</TableHead>
-                            <TableHead className="hidden sm:table-cell">Amount</TableHead>
-                            <TableHead className="hidden sm:table-cell">Serial#</TableHead>
-                            <TableHead className="hidden sm:table-cell">Company</TableHead>
-                            <TableHead className="hidden sm:table-cell">PO</TableHead>
-                            <TableHead className="hidden sm:table-cell">Tracking</TableHead>
-                            <TableHead className="text-right">Date</TableHead>
+                            <TableHead className="">Amount</TableHead>
+                            <TableHead className="">Serial#</TableHead>
+                            <TableHead className="">Company</TableHead>
+                            <TableHead className="">PO</TableHead>
+                            <TableHead className="">Tracking</TableHead>
+                            <TableHead className="">Date</TableHead>
                         </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -96,16 +96,13 @@ export const DisplayShipping = ({ searchQuery }) => {
                                 <TableRow key={item.id}>
                                     <TableCell>
                                         <div className="font-medium">{item.Name}</div>
-                                        <div className="hidden text-sm text-muted-foreground md:inline">
-                                            {item.email}
-                                        </div>
                                     </TableCell>
-                                    <TableCell className="hidden sm:table-cell">{item.Amount}</TableCell>
-                                    <TableCell className="hidden sm:table-cell">{item.Serial}</TableCell>
-                                    <TableCell className="hidden sm:table-cell">{item.Company}</TableCell>
-                                    <TableCell className="hidden sm:table-cell">{item.PO}</TableCell>
-                                    <TableCell className="hidden sm:table-cell">{item.Tracking}</TableCell>
-                                    <TableCell className="text-right">{item.Date}</TableCell>
+                                    <TableCell className="">{item.Amount}</TableCell>
+                                    <TableCell className="">{item.Serial}</TableCell>
+                                    <TableCell className="">{item.Company}</TableCell>
+                                    <TableCell className="">{item.PO}</TableCell>
+                                    <TableCell className="">{item.Tracking}</TableCell>
+                                    <TableCell className="">{item.Date}</TableCell>
                                     <TableCell className="text-right">
                                         <Button
                                             variant="destructive"
