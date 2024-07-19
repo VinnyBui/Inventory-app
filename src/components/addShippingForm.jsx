@@ -75,7 +75,6 @@ const AddShippingForm = () => {
         Date: data.date,
       });
       console.log("Document added with ID: ", docRef.id);
-      form.reset(); 
     } catch (e) {
       console.error("Error adding document: ", e);
     }

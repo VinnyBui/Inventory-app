@@ -60,7 +60,6 @@ const AddForm = () => {
         Location: data.location,
       });
       console.log("Document added with ID: ", docRef.id);
-      form.reset(); 
     } catch (e) {
       console.error("Error adding document: ", e);
     }
