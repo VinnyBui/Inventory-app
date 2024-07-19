@@ -82,27 +82,27 @@ export const DisplayShipping = ({ searchQuery }) => {
                     <Table>
                         <TableHeader>
                         <TableRow>
-                            <TableHead>Name</TableHead>
+                            <TableHead>Company</TableHead>
+                            <TableHead className="">PO</TableHead>
+                            <TableHead className="">Date</TableHead>
+                            <TableHead className="">Name</TableHead>
                             <TableHead className="">Amount</TableHead>
                             <TableHead className="">Serial#</TableHead>
-                            <TableHead className="">Company</TableHead>
-                            <TableHead className="">PO</TableHead>
-                            <TableHead className="">Tracking</TableHead>
-                            <TableHead className="">Date</TableHead>
+                            <TableHead className="">Tracking#</TableHead>
                         </TableRow>
                         </TableHeader>
                         <TableBody>
                             {filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item) => (
                                 <TableRow key={item.id}>
                                     <TableCell>
-                                        <div className="font-medium">{item.Name}</div>
+                                        <div className="font-medium">{item.Company}</div>
                                     </TableCell>
+                                    <TableCell className="">{item.PO}</TableCell>
+                                    <TableCell className="">{item.Date}</TableCell>
+                                    <TableCell className="">{item.Name}</TableCell>
                                     <TableCell className="">{item.Amount}</TableCell>
                                     <TableCell className="">{item.Serial}</TableCell>
-                                    <TableCell className="">{item.Company}</TableCell>
-                                    <TableCell className="">{item.PO}</TableCell>
                                     <TableCell className="">{item.Tracking}</TableCell>
-                                    <TableCell className="">{item.Date}</TableCell>
                                     <TableCell className="text-right">
                                         <Button
                                             variant="destructive"
