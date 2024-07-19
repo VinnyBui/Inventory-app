@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 
 const FormSchema = z.object({
@@ -50,6 +51,7 @@ const AddShippingForm = () => {
       PO: "",
       tracking: "",
       date: "",
+      notes: "",
     },
   });
 
@@ -73,6 +75,7 @@ const AddShippingForm = () => {
         PO: data.PO,
         Tracking: data.tracking,
         Date: data.date,
+        Notes: data.notes,
       });
       console.log("Document added with ID: ", docRef.id);
     } catch (e) {
@@ -83,7 +86,46 @@ const AddShippingForm = () => {
   return (
     <div className="flex items-center justify-center">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-md space-y-6 p-8 rounded shadow-md">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-4 p-8 rounded shadow-md">
+          <FormField
+            control={form.control}
+            name="company"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Company</FormLabel>
+                <FormControl>
+                  <Input placeholder="IBuy" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="PO"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>PO</FormLabel>
+                <FormControl>
+                  <Input placeholder="PO" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="name"
@@ -115,35 +157,9 @@ const AddShippingForm = () => {
             name="serial"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Serial Number</FormLabel>
+                <FormLabel>Serial#</FormLabel>
                 <FormControl>
                   <Input placeholder="12345" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="company"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Company</FormLabel>
-                <FormControl>
-                  <Input placeholder="IBuy" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="PO"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>PO</FormLabel>
-                <FormControl>
-                  <Input placeholder="PO" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -164,18 +180,20 @@ const AddShippingForm = () => {
           />
           <FormField
             control={form.control}
-            name="date"
+            name="notes"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Date</FormLabel>
+              <FormItem className="col-span-1 md:col-span-2">
+                <FormLabel>Notes</FormLabel>
                 <FormControl>
-                  <Input type="date" {...field} />
+                  <Textarea placeholder="Additional information" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <div className="col-span-1 md:col-span-2">
+            <Button type="submit" className="w-full">Submit</Button>
+          </div>
         </form>
       </Form>
     </div>
