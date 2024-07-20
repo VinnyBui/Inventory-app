@@ -6,6 +6,7 @@ import Display from './displayInventory';
 import AddForm from './addForm';
 import AddShippingForm from './addShippingForm';
 import DisplayShipping from './displayShipping';
+import DisplayItem from './displayItem';
 import {
   CircleUser,
   Home,
@@ -35,6 +36,7 @@ const Dashboard = () => {
   const [shippingExpanded, setShippingExpanded] = useState(false);
   const [receivingExpanded, setReceivingExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedItemId, setSelectedItemId] = useState(null);
 
   const navigate = useNavigate();
 
@@ -61,6 +63,7 @@ const Dashboard = () => {
 
   const handleSelection = (item) => {
     setSelectedTab(item);
+    setSelectedItemId(null); // Reset selected item when tab changes
     if (['inventory', 'add'].includes(item)) {
       setInventoryExpanded(true);
     } else {
@@ -82,7 +85,15 @@ const Dashboard = () => {
     setSearchQuery(e.target.value);
   };
 
+  const handleItemClick = (id) => {
+    setSelectedItemId(id);
+  };
+
   const renderContent = () => {
+    if (selectedItemId) {
+      return <DisplayItem id={selectedItemId} />;
+    }
+
     switch (selectedTab) {
       case 'dashboard':
         return <div>It's dashboard content</div>;
@@ -91,7 +102,7 @@ const Dashboard = () => {
       case 'add':
         return <AddForm />;
       case 'shipping':
-        return <DisplayShipping searchQuery={searchQuery} />;
+        return <DisplayShipping searchQuery={searchQuery} onItemClick={handleItemClick} />;
       case 'addShipping':
         return <AddShippingForm />;
       case 'receiving':
@@ -268,7 +279,7 @@ const Dashboard = () => {
                 <Link
                   to="#"
                   onClick={() => handleSelection('shipping')}
-                  className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
+                  className={`mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground`}
                 >
                   <Package2 className="h-5 w-5" />
                   Shipping
@@ -300,7 +311,7 @@ const Dashboard = () => {
                     <Link
                       onClick={() => handleSelection('addReceiving')}
                       className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                        selectedTab === 'addShipping'
+                        selectedTab === 'addReceiving'
                           ? 'bg-muted text-primary'
                           : 'text-muted-foreground hover:text-primary'
                       }`}
