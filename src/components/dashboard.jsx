@@ -14,6 +14,7 @@ import {
   Package2,
   Search,
   ActivityIcon,
+  PackageOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +33,7 @@ const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState('dashboard');
   const [inventoryExpanded, setInventoryExpanded] = useState(false);
   const [shippingExpanded, setShippingExpanded] = useState(false);
+  const [receivingExpanded, setReceivingExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const navigate = useNavigate();
@@ -69,6 +71,11 @@ const Dashboard = () => {
     } else {
       setShippingExpanded(false);
     }
+    if (['receiving', 'addReceiving'].includes(item)) { 
+      setReceivingExpanded(true);
+    } else {
+      setReceivingExpanded(false);
+    }
   };
 
   const handleSearch = (e) => {
@@ -87,6 +94,10 @@ const Dashboard = () => {
         return <DisplayShipping searchQuery={searchQuery} />;
       case 'addShipping':
         return <AddShippingForm />;
+      case 'receiving':
+        return <div>Receiving</div>;
+      case 'addReceiving':
+        return <div>Add Receiving</div>;
       default:
         return <div>It's dashboard content</div>;
     }
@@ -171,6 +182,32 @@ const Dashboard = () => {
                   </Link>
                 </div>
               )}
+              <Link
+                to="#"
+                onClick={() => handleSelection('receiving')}
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                  selectedTab === 'receiving'
+                    ? 'bg-muted text-primary'
+                    : 'text-muted-foreground hover:text-primary'
+                }`}
+              >
+                <PackageOpen className="h-4 w-4" />
+                Receiving
+              </Link>
+              {receivingExpanded && (
+                <div className="ml-6">
+                  <Link
+                    onClick={() => handleSelection('addReceiving')}
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                      selectedTab === 'addReceiving'
+                        ? 'bg-muted text-primary'
+                        : 'text-muted-foreground hover:text-primary'
+                    }`}
+                  >
+                    Add
+                  </Link>
+                </div>
+              )}
             </nav>
           </div>
         </div>
@@ -247,6 +284,28 @@ const Dashboard = () => {
                       }`}
                     >
                       Add
+                    </Link>
+                  </div>
+                )}
+                <Link
+                  to="#"
+                  onClick={() => handleSelection('receiving')}
+                  className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
+                >
+                  <PackageOpen className="h-5 w-5" />
+                  Receiving
+                </Link>
+                {receivingExpanded && (
+                  <div className="ml-6">
+                    <Link
+                      onClick={() => handleSelection('addReceiving')}
+                      className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                        selectedTab === 'addShipping'
+                          ? 'bg-muted text-primary'
+                          : 'text-muted-foreground hover:text-primary'
+                      }`}
+                    >
+                      add
                     </Link>
                   </div>
                 )}
