@@ -42,15 +42,6 @@ const AddForm = () => {
   });
 
   const onSubmit = async (data) => {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-
     try {
       const itemsCollectionRef = collection(db, 'Items');
       const docRef = await addDoc(itemsCollectionRef, {
@@ -60,15 +51,28 @@ const AddForm = () => {
         Location: data.location,
       });
       console.log("Document added with ID: ", docRef.id);
+
+      toast({
+        title: "Success!",
+        description: "Document added successfully.",
+        variant: "success",
+      });
+
     } catch (e) {
       console.error("Error adding document: ", e);
+
+      toast({
+        title: "Error!",
+        description: "There was an error adding the document.",
+        variant: "destructive",
+      });
     }
   }
 
   return (
-    <div className="flex items-center justify-center ">
+    <div className="flex items-center justify-center">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-md space-y-6 e p-8 rounded shadow-md">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-md space-y-6 p-8 rounded shadow-md">
           <FormField
             control={form.control}
             name="name"
@@ -100,7 +104,7 @@ const AddForm = () => {
             name="serial"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Serial Number</FormLabel>
+                <FormLabel>Serial#</FormLabel>
                 <FormControl>
                   <Input placeholder="12345" {...field} />
                 </FormControl>

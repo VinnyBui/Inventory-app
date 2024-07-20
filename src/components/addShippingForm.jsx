@@ -38,6 +38,7 @@ const FormSchema = z.object({
   date: z.string().min(1, {
     message: "Date must be at least 1 character.",
   }),
+  notes: z.string().optional(), // Make notes optional
 });
 
 const AddShippingForm = () => {
@@ -51,7 +52,7 @@ const AddShippingForm = () => {
       PO: "",
       tracking: "",
       date: "",
-      notes: "",
+      notes: "", // Ensure notes is initialized as an empty string
     },
   });
 
@@ -75,7 +76,7 @@ const AddShippingForm = () => {
         PO: data.PO,
         Tracking: data.tracking,
         Date: data.date,
-        Notes: data.notes,
+        Notes: data.notes || "", // Provide a default value if notes is undefined
       });
       console.log("Document added with ID: ", docRef.id);
     } catch (e) {

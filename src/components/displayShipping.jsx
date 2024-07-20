@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import { db } from "../config/firebase";
 import { getDocs, collection, doc, deleteDoc } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,8 @@ import {
 } from "@/components/ui/table";
 import PaginationComponent from './pagination';
 
-export const DisplayShipping = ({ searchQuery, onItemClick }) => {
+const DisplayShipping = () => {
+  const { searchQuery, handleItemClick } = useOutletContext();
   const [items, setItems] = useState([]);
   const itemsCollectionRef = collection(db, "Shipping");
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,19 +38,19 @@ export const DisplayShipping = ({ searchQuery, onItemClick }) => {
         setItems(filteredData);
       } catch (err) {
         console.error("Error getting data:", err);
-      }
+      };
     };
 
     getItems();
   }, []);
 
   const filteredItems = items.filter(item =>
-    item.Name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.Serial.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.Company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.PO.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.Tracking.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.Date.toLowerCase().includes(searchQuery.toLowerCase())
+    item.Name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.Serial?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.Company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.PO?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.Tracking?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.Date?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleDelete = async (id) => {
@@ -91,7 +93,7 @@ export const DisplayShipping = ({ searchQuery, onItemClick }) => {
             </TableHeader>
             <TableBody>
               {filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item) => (
-                <TableRow key={item.id} onClick={() => onItemClick(item.id)}>
+                <TableRow key={item.id} onClick={() => handleItemClick(item.id)}>
                   <TableCell>
                     <div className="font-medium">{item.Company}</div>
                   </TableCell>
@@ -116,13 +118,13 @@ export const DisplayShipping = ({ searchQuery, onItemClick }) => {
               ))}
             </TableBody>
           </Table>
+          <PaginationComponent
+            currentPage={currentPage}
+            totalPages={totalPages}
+            handlePageChange={handlePageChange}
+          />
         </CardContent>
       </Card>
-      <PaginationComponent 
-        currentPage={currentPage} 
-        totalPages={totalPages} 
-        onPageChange={handlePageChange} 
-      />
     </div>
   );
 };

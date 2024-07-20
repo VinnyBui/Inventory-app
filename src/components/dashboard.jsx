@@ -1,12 +1,8 @@
 import { useState, useEffect } from 'react';
 import { auth } from '../config/firebase';
 import { ModeToggle } from './mode-toggle';
-import { useNavigate, Link } from 'react-router-dom';
-import Display from './displayInventory';
-import AddForm from './addForm';
-import AddShippingForm from './addShippingForm';
-import DisplayShipping from './displayShipping';
-import DisplayItem from './displayItem';
+import { useNavigate, Link, Outlet, useLocation } from 'react-router-dom';
+import Breadcrumbs from './breadCrumbs';
 import {
   CircleUser,
   Home,
@@ -39,6 +35,7 @@ const Dashboard = () => {
   const [selectedItemId, setSelectedItemId] = useState(null);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -51,6 +48,11 @@ const Dashboard = () => {
 
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    const path = location.pathname.split('/')[1];
+    setSelectedTab(path || 'dashboard');
+  }, [location]);
 
   const handleLogout = async () => {
     try {
@@ -79,39 +81,57 @@ const Dashboard = () => {
     } else {
       setReceivingExpanded(false);
     }
+    navigate(`/${item}?search=${searchQuery}`);
   };
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
+    const params = new URLSearchParams(location.search);
+    params.set('search', e.target.value);
+    navigate(`${location.pathname}?${params.toString()}`);
   };
 
   const handleItemClick = (id) => {
     setSelectedItemId(id);
+    navigate(`/item/${id}`);
   };
 
-  const renderContent = () => {
-    if (selectedItemId) {
-      return <DisplayItem id={selectedItemId} />;
-    }
+  const getBreadcrumbItems = () => {
+    const items = [
+      { label: 'Dashboard', link: '/dashboard' },
+    ];
 
     switch (selectedTab) {
-      case 'dashboard':
-        return <div>It's dashboard content</div>;
       case 'inventory':
-        return <Display searchQuery={searchQuery} />;
+        items.push({ label: 'Inventory', link: '/inventory' });
+        break;
       case 'add':
-        return <AddForm />;
+        items.push({ label: 'Inventory', link: '/inventory' });
+        items.push({ label: 'Add Item', link: '/add' });
+        break;
       case 'shipping':
-        return <DisplayShipping searchQuery={searchQuery} onItemClick={handleItemClick} />;
+        items.push({ label: 'Shipping', link: '/shipping' });
+        break;
       case 'addShipping':
-        return <AddShippingForm />;
+        items.push({ label: 'Shipping', link: '/shipping' });
+        items.push({ label: 'Add Shipping', link: '/addShipping' });
+        break;
       case 'receiving':
-        return <div>Receiving</div>;
+        items.push({ label: 'Receiving', link: '/receiving' });
+        break;
       case 'addReceiving':
-        return <div>Add Receiving</div>;
+        items.push({ label: 'Receiving', link: '/receiving' });
+        items.push({ label: 'Add Receiving', link: '/addReceiving' });
+        break;
       default:
-        return <div>It's dashboard content</div>;
+        break;
     }
+
+    if (selectedItemId) {
+      items.push({ label: 'Item Details', link: `/item/${selectedItemId}` });
+    }
+
+    return items;
   };
 
   return (
@@ -130,7 +150,7 @@ const Dashboard = () => {
           <div className="flex-1">
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
               <Link
-                to="#"
+                to="/dashboard"
                 onClick={() => handleSelection('dashboard')}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                   selectedTab === 'dashboard'
@@ -142,7 +162,7 @@ const Dashboard = () => {
                 Dashboard
               </Link>
               <Link
-                to="#"
+                to={`/inventory?search=${searchQuery}`}
                 onClick={() => handleSelection('inventory')}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                   selectedTab === 'inventory'
@@ -156,6 +176,7 @@ const Dashboard = () => {
               {inventoryExpanded && (
                 <div className="ml-6">
                   <Link
+                    to={`/add?search=${searchQuery}`}
                     onClick={() => handleSelection('add')}
                     className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                       selectedTab === 'add'
@@ -168,7 +189,7 @@ const Dashboard = () => {
                 </div>
               )}
               <Link
-                to="#"
+                to={`/shipping?search=${searchQuery}`}
                 onClick={() => handleSelection('shipping')}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                   selectedTab === 'shipping'
@@ -182,6 +203,7 @@ const Dashboard = () => {
               {shippingExpanded && (
                 <div className="ml-6">
                   <Link
+                    to={`/addShipping?search=${searchQuery}`}
                     onClick={() => handleSelection('addShipping')}
                     className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                       selectedTab === 'addShipping'
@@ -194,7 +216,7 @@ const Dashboard = () => {
                 </div>
               )}
               <Link
-                to="#"
+                to={`/receiving?search=${searchQuery}`}
                 onClick={() => handleSelection('receiving')}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                   selectedTab === 'receiving'
@@ -208,6 +230,7 @@ const Dashboard = () => {
               {receivingExpanded && (
                 <div className="ml-6">
                   <Link
+                    to={`/addReceiving?search=${searchQuery}`}
                     onClick={() => handleSelection('addReceiving')}
                     className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                       selectedTab === 'addReceiving'
@@ -247,7 +270,7 @@ const Dashboard = () => {
                 </Link>
                 <hr className="my-2 border-t border-gray-200" />
                 <Link
-                  to="#"
+                  to="/dashboard"
                   onClick={() => handleSelection('dashboard')}
                   className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
                 >
@@ -255,7 +278,7 @@ const Dashboard = () => {
                   Dashboard
                 </Link>
                 <Link
-                  to="#"
+                  to={`/inventory?search=${searchQuery}`}
                   onClick={() => handleSelection('inventory')}
                   className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
                 >
@@ -265,6 +288,7 @@ const Dashboard = () => {
                 {inventoryExpanded && (
                   <div className="ml-6">
                     <Link
+                      to={`/add?search=${searchQuery}`}
                       onClick={() => handleSelection('add')}
                       className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                         selectedTab === 'add'
@@ -277,7 +301,7 @@ const Dashboard = () => {
                   </div>
                 )}
                 <Link
-                  to="#"
+                  to={`/shipping?search=${searchQuery}`}
                   onClick={() => handleSelection('shipping')}
                   className={`mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground`}
                 >
@@ -287,6 +311,7 @@ const Dashboard = () => {
                 {shippingExpanded && (
                   <div className="ml-6">
                     <Link
+                      to={`/addShipping?search=${searchQuery}`}
                       onClick={() => handleSelection('addShipping')}
                       className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                         selectedTab === 'addShipping'
@@ -299,7 +324,7 @@ const Dashboard = () => {
                   </div>
                 )}
                 <Link
-                  to="#"
+                  to={`/receiving?search=${searchQuery}`}
                   onClick={() => handleSelection('receiving')}
                   className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
                 >
@@ -309,6 +334,7 @@ const Dashboard = () => {
                 {receivingExpanded && (
                   <div className="ml-6">
                     <Link
+                      to={`/addReceiving?search=${searchQuery}`}
                       onClick={() => handleSelection('addReceiving')}
                       className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                         selectedTab === 'addReceiving'
@@ -316,7 +342,7 @@ const Dashboard = () => {
                           : 'text-muted-foreground hover:text-primary'
                       }`}
                     >
-                      add
+                      Add
                     </Link>
                   </div>
                 )}
@@ -352,7 +378,8 @@ const Dashboard = () => {
           </DropdownMenu>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          {renderContent()}
+          <Breadcrumbs items={getBreadcrumbItems()} />
+          <Outlet context={{ searchQuery, handleItemClick }} />
         </main>
       </div>
     </div>

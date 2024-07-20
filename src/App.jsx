@@ -7,6 +7,11 @@ import { Toaster } from "@/components/ui/toaster";
 // Lazy load the components
 const Dashboard = lazy(() => import('./components/dashboard'));
 const Authorize = lazy(() => import('./components/authorize'));
+const DisplayInventory = lazy(() => import('./components/displayInventory'));
+const AddForm = lazy(() => import('./components/addForm'));
+const DisplayShipping = lazy(() => import('./components/displayShipping'));
+const AddShippingForm = lazy(() => import('./components/addShippingForm'));
+const DisplayItem = lazy(() => import('./components/displayItem')); // Assuming this is the component for item details
 
 const App = () => {
   return (
@@ -15,7 +20,16 @@ const App = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
             <Route path="/authorize" element={<Authorize />} />
-            <Route path="/" element={<PrivateRoute element={<Dashboard />} />} />
+            <Route path="/" element={<PrivateRoute element={<Dashboard />} />}>
+              <Route path="dashboard" element={<div>It's dashboard content</div>} />
+              <Route path="inventory" element={<DisplayInventory />} />
+              <Route path="add" element={<AddForm />} />
+              <Route path="shipping" element={<DisplayShipping />} />
+              <Route path="addShipping" element={<AddShippingForm />} />
+              <Route path="receiving" element={<div>Receiving</div>} />
+              <Route path="addReceiving" element={<div>Add Receiving</div>} />
+              <Route path="item/:id" element={<DisplayItem />} /> 
+            </Route>
           </Routes>
           <Toaster />
         </Suspense>
