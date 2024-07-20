@@ -21,7 +21,7 @@ const App = () => {
           <Routes>
             <Route path="/authorize" element={<Authorize />} />
             <Route path="/" element={<PrivateRoute element={<Dashboard />} />}>
-              <Route path="dashboard" element={<div>It's dashboard content</div>} />
+              <Route path="dashboard" element={<div></div>} />
               <Route path="inventory" element={<DisplayInventory />} />
               <Route path="add" element={<AddForm />} />
               <Route path="shipping" element={<DisplayShipping />} />
