@@ -118,13 +118,13 @@ const DisplayShipping = () => {
               ))}
             </TableBody>
           </Table>
-          <PaginationComponent
-            currentPage={currentPage}
-            totalPages={totalPages}
-            handlePageChange={handlePageChange}
-          />
         </CardContent>
       </Card>
+      <PaginationComponent
+        currentPage={currentPage}
+        totalPages={totalPages}
+        handlePageChange={handlePageChange}
+      />
     </div>
   );
 };
