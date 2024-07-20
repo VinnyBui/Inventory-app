@@ -11,14 +11,14 @@ import {
 } from "@/components/ui/card";
 
 const DisplayItem = () => {
-  const { id } = useParams(); // Get the id from URL parameters
+  const { type, id } = useParams(); // Get the type and id from URL parameters
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        const docRef = doc(db, 'Shipping', id);
+        const docRef = doc(db, type === 'inventory' ? 'Items' : 'Shipping', id);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -34,7 +34,7 @@ const DisplayItem = () => {
     };
 
     fetchItem();
-  }, [id]);
+  }, [type, id]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -47,12 +47,22 @@ const DisplayItem = () => {
         <CardDescription>{item?.Name}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div>Company: {item?.Company}</div>
-        <div>PO: {item?.PO}</div>
-        <div>Date: {item?.Date}</div>
-        <div>Serial: {item?.Serial}</div>
-        <div>Tracking: {item?.Tracking}</div>
-        <div>Notes: {item?.Notes}</div>
+        {type === 'inventory' ? (
+          <>
+            <div>Location: {item?.Location}</div>
+            <div>Serial: {item?.Serial}</div>
+            <div>Amount: {item?.Amount}</div>
+          </>
+        ) : (
+          <>
+            <div>Company: {item?.Company}</div>
+            <div>PO: {item?.PO}</div>
+            <div>Date: {item?.Date}</div>
+            <div>Serial: {item?.Serial}</div>
+            <div>Tracking: {item?.Tracking}</div>
+            <div>Notes: {item?.Notes}</div>
+          </>
+        )}
       </CardContent>
     </Card>
   );

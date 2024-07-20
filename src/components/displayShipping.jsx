@@ -38,19 +38,19 @@ const DisplayShipping = () => {
         setItems(filteredData);
       } catch (err) {
         console.error("Error getting data:", err);
-      };
+      }
     };
 
     getItems();
   }, []);
 
   const filteredItems = items.filter(item =>
-    item.Name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.Serial?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.Company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.PO?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.Tracking?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.Date?.toLowerCase().includes(searchQuery.toLowerCase())
+    (item.Name?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (item.Serial?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (item.Company?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (item.PO?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (item.Tracking?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (item.Date?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   const handleDelete = async (id) => {
@@ -93,7 +93,7 @@ const DisplayShipping = () => {
             </TableHeader>
             <TableBody>
               {filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item) => (
-                <TableRow key={item.id} onClick={() => handleItemClick(item.id)}>
+                <TableRow key={item.id} onClick={() => handleItemClick(item.id, 'shipping')}>
                   <TableCell>
                     <div className="font-medium">{item.Company}</div>
                   </TableCell>

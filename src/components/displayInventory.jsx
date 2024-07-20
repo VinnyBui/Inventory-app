@@ -20,8 +20,8 @@ import {
 } from "@/components/ui/table";
 import PaginationComponent from './pagination';
 
-const Display = () => {
-  const { searchQuery = '', handleItemClick } = useOutletContext();
+const DisplayInventory = () => {
+  const { searchQuery, handleItemClick } = useOutletContext();
   const [items, setItems] = useState([]);
   const itemsCollectionRef = collection(db, "Items");
   const [currentPage, setCurrentPage] = useState(1);
@@ -45,9 +45,9 @@ const Display = () => {
   }, []);
 
   const filteredItems = items.filter(item =>
-    (item.Name && item.Name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (item.Serial && item.Serial.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (item.Location && item.Location.toLowerCase().includes(searchQuery.toLowerCase()))
+    (item.Name?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (item.Serial?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (item.Location?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   const handleDelete = async (id) => {
@@ -66,7 +66,7 @@ const Display = () => {
     }
   };
 
-  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+  const totalPages = Math.ceil(items.length / itemsPerPage);
 
   return (
     <div>
@@ -87,7 +87,7 @@ const Display = () => {
             </TableHeader>
             <TableBody>
               {filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item) => (
-                <TableRow key={item.id} onClick={() => handleItemClick(item.id)}>
+                <TableRow key={item.id} onClick={() => handleItemClick(item.id, 'inventory')}>
                   <TableCell>
                     <div className="font-medium">{item.Name || 'N/A'}</div>
                   </TableCell>
@@ -114,10 +114,10 @@ const Display = () => {
       <PaginationComponent
         currentPage={currentPage}
         totalPages={totalPages}
-        onPageChange={handlePageChange}
+        handlePageChange={handlePageChange}
       />
     </div>
   );
 };
 
-export default Display;
+export default DisplayInventory;

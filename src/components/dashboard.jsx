@@ -91,9 +91,9 @@ const Dashboard = () => {
     navigate(`${location.pathname}?${params.toString()}`);
   };
 
-  const handleItemClick = (id) => {
+  const handleItemClick = (id, type) => {
     setSelectedItemId(id);
-    navigate(`/item/${id}`);
+    navigate(`/item/${type}/${id}`);
   };
 
   const getBreadcrumbItems = () => {
@@ -128,7 +128,7 @@ const Dashboard = () => {
     }
 
     if (selectedItemId) {
-      items.push({ label: 'Item Details', link: `/item/${selectedItemId}` });
+      items.push({ label: 'Item Details', link: `/item/${selectedTab}/${selectedItemId}` });
     }
 
     return items;
