@@ -190,10 +190,14 @@ const Dashboard = () => {
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col">
               <nav className="grid gap-4 text-lg font-medium">
-                <Link className="flex items-center gap-2 text-lg font-semibold">
+                <Link
+                    to="/"
+                    className="flex items-center gap-2 text-lg font-semibold"
+                  >
                   <Package2 className="h-6 w-6" />
-                  <span className="sr-only">Do you see me</span>
+                  <span className="">WeBuyCisco</span>
                 </Link>
+                <hr className="my-2 border-t border-gray-200" />
                 <Link
                   to="#"
                   onClick={() => handleSelection('dashboard')}
@@ -227,13 +231,9 @@ const Dashboard = () => {
                 <Link
                   to="#"
                   onClick={() => handleSelection('shipping')}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                    selectedTab === 'shipping'
-                      ? 'bg-muted text-primary'
-                      : 'text-muted-foreground hover:text-primary'
-                  }`}
+                  className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
                 >
-                  <Package2 className="h-4 w-4" />
+                  <Package2 className="h-5 w-5" />
                   Shipping
                 </Link>
                 {shippingExpanded && (
