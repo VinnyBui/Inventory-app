@@ -145,7 +145,7 @@ const DisplayInventory = () => {
                               });
                           }}
                         >
-                          Copy All Serial#
+                          Copy Serial#
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={(e) => handleEdit(e, item)}>
