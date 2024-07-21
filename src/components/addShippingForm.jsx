@@ -11,7 +11,6 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -227,7 +226,13 @@ const AddShippingForm = () => {
                     {fields.map((item, index) => (
                       <FormItem key={item.id}>
                         <FormControl className="flex-1">
-                          <Input placeholder="12345" />
+                        <Input 
+                          placeholder="12345"
+                          {...form.register(`serial.${index}`, {
+                            required: "Serial number is required",
+                            minLength: { value: 5, message: "Serial number must be at least 5 characters" }
+                          })}
+                        />
                         </FormControl>
                         <Separator className="my-2" />
                       </FormItem>
