@@ -18,7 +18,7 @@ const DisplayItem = () => {
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        const docRef = doc(db, type === 'inventory' ? 'Items' : 'Shipping', id);
+        const docRef = doc(db, type === 'inventory' ? 'Inventory' : 'Shipping', id);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -50,7 +50,18 @@ const DisplayItem = () => {
         {type === 'inventory' ? (
           <>
             <div>Location: {item?.Location}</div>
-            <div>Serial: {item?.Serial}</div>
+            <div>
+              Serial#: 
+              {Array.isArray(item?.Serial) ? (
+                <ul>
+                  {item.Serial.map((serial, index) => (
+                    <li key={index}>- {serial}</li>
+                  ))}
+                </ul>
+              ) : (
+                <span>{item?.Serial}</span>
+              )}
+            </div>
             <div>Amount: {item?.Amount}</div>
             <div>Notes: {item?.Notes}</div>
           </>
