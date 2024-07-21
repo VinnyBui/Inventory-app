@@ -69,10 +69,12 @@ const DisplayShipping = () => {
     let sortableItems = [...filteredItems];
     if (sortConfig !== null) {
       sortableItems.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
+        const dateA = new Date(a[sortConfig.key]);
+        const dateB = new Date(b[sortConfig.key]);
+        if (dateA < dateB) {
           return sortConfig.direction === 'ascending' ? -1 : 1;
         }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
+        if (dateA > dateB) {
           return sortConfig.direction === 'ascending' ? 1 : -1;
         }
         return 0;
@@ -87,6 +89,14 @@ const DisplayShipping = () => {
       direction = 'descending';
     }
     setSortConfig({ key, direction });
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
   };
 
   const handleDelete = async (id) => {
@@ -121,113 +131,115 @@ const DisplayShipping = () => {
           <CardDescription>Amount of items: {filteredItems.length}</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Company</TableHead>
-                <TableHead className="">PO</TableHead>
-                <TableHead className="">
-                  <Button
-                    variant="ghost"
-                    onClick={() => requestSort('Date')}
-                  >
-                    Date
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </TableHead>
-                <TableHead className="">Name</TableHead>
-                <TableHead className="">Amount</TableHead>
-                <TableHead className="">Notes</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {sortedItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item) => (
-                <TableRow key={item.id} onClick={() => handleItemClick(item.id, 'shipping')}>
-                  <TableCell>
-                    <div className="font-medium">{item.Company}</div>
-                  </TableCell>
-                  <TableCell className="">{item.PO}</TableCell>
-                  <TableCell className="">{item.Date}</TableCell>
-                  <TableCell className="">{item.Name}</TableCell>
-                  <TableCell className="">{item.Amount}</TableCell>
-                  <TableCell className="">{item.Notes}</TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0" onClick={(e) => e.stopPropagation()}>
-                          <span className="sr-only">Open menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const serialNumbers = item.Serial.join(", ");
-                            navigator.clipboard.writeText(serialNumbers)
-                              .then(() => {
-                                toast({
-                                  title: "Copied!",
-                                  description: "All serial numbers copied to clipboard.",
-                                  variant: "success",
-                                });
-                              })
-                              .catch((err) => {
-                                toast({
-                                  title: "Error!",
-                                  description: "Failed to copy serial numbers.",
-                                  variant: "destructive",
-                                });
-                                console.error("Failed to copy serial numbers: ", err);
-                              });
-                          }}
-                        >
-                          Copy Serial#
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const trackingNumber = item.Tracking;
-                            navigator.clipboard.writeText(trackingNumber)
-                              .then(() => {
-                                toast({
-                                  title: "Copied!",
-                                  description: "Tracking number copied to clipboard.",
-                                  variant: "success",
-                                });
-                              })
-                              .catch((err) => {
-                                toast({
-                                  title: "Error!",
-                                  description: "Failed to copy Tracking number.",
-                                  variant: "destructive",
-                                });
-                                console.error("Failed to copy Tracking number: ", err);
-                              });
-                          }}
-                        >
-                          Copy Tracking#
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={(e) => handleEdit(e, item)}>
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDelete(item.id);
-                          }}
-                        >
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+          <div className="overflow-x-auto">
+            <Table className="min-w-full">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Company</TableHead>
+                  <TableHead>PO</TableHead>
+                  <TableHead>
+                    <Button
+                      variant="ghost"
+                      onClick={() => requestSort('Date')}
+                    >
+                      Date
+                      <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                  </TableHead>
+                  <TableHead className="hidden sm:table-cell">Name</TableHead>
+                  <TableHead className="hidden sm:table-cell">Amount</TableHead>
+                  <TableHead className="hidden md:table-cell">Notes</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {sortedItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item) => (
+                  <TableRow key={item.id} onClick={() => handleItemClick(item.id, 'shipping')}>
+                    <TableCell>
+                      <div className="font-medium">{item.Company}</div>
+                    </TableCell>
+                    <TableCell>{item.PO}</TableCell>
+                    <TableCell>{formatDate(item.Date)}</TableCell>
+                    <TableCell className="hidden sm:table-cell">{item.Name}</TableCell>
+                    <TableCell className="hidden sm:table-cell">{item.Amount}</TableCell>
+                    <TableCell className="hidden md:table-cell">{item.Notes}</TableCell>
+                    <TableCell className="text-right flex justify-end">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0" onClick={(e) => e.stopPropagation()}>
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const serialNumbers = item.Serial.join(", ");
+                              navigator.clipboard.writeText(serialNumbers)
+                                .then(() => {
+                                  toast({
+                                    title: "Copied!",
+                                    description: "All serial numbers copied to clipboard.",
+                                    variant: "success",
+                                  });
+                                })
+                                .catch((err) => {
+                                  toast({
+                                    title: "Error!",
+                                    description: "Failed to copy serial numbers.",
+                                    variant: "destructive",
+                                  });
+                                  console.error("Failed to copy serial numbers: ", err);
+                                });
+                            }}
+                          >
+                            Copy Serial#
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const trackingNumber = item.Tracking;
+                              navigator.clipboard.writeText(trackingNumber)
+                                .then(() => {
+                                  toast({
+                                    title: "Copied!",
+                                    description: "Tracking number copied to clipboard.",
+                                    variant: "success",
+                                  });
+                                })
+                                .catch((err) => {
+                                  toast({
+                                    title: "Error!",
+                                    description: "Failed to copy Tracking number.",
+                                    variant: "destructive",
+                                  });
+                                  console.error("Failed to copy Tracking number: ", err);
+                                });
+                            }}
+                          >
+                            Copy Tracking#
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={(e) => handleEdit(e, item)}>
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDelete(item.id);
+                            }}
+                          >
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
       <PaginationComponent
