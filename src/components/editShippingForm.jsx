@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, useFieldArray  } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -67,7 +67,11 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
     },
   });
 
-  const { reset, handleSubmit, register, watch } = methods;
+  const { reset, handleSubmit, register, watch, control } = methods;
+  const { fields, append, remove } = useFieldArray({
+    control: methods.control,
+    name: "serial",
+  });
 
   useEffect(() => {
     if (selectedItem) {
@@ -153,33 +157,54 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={methods.control}
-              name="serial"
-              render={() => (
-                <FormItem>
-                  <FormLabel>Serial#</FormLabel>
-                  <div className="max-h-40 overflow-y-auto custom-scrollbar">
-                    <div className="p-4">
-                      {watch('serial').map((serial, index) => (
-                        <div key={index} className="mb-2">
-                          <FormControl>
-                            <Input
-                              placeholder="12345"
-                              {...register(`serial.${index}`, {
-                                required: "Serial number is required",
-                                minLength: { value: 5, message: "Serial number must be at least 5 characters" }
-                              })}
-                            />
-                          </FormControl>
-                          <Separator className="my-2" />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </FormItem>
-              )}
-            />
+<FormField
+  control={methods.control}
+  name="serial"
+  render={() => (
+    <FormItem>
+      <FormLabel>Serial# (Count: {fields.length})</FormLabel>
+      <div className="max-h-40 overflow-y-auto custom-scrollbar">
+        <div className="p-4">
+          {fields.map((field, index) => (
+            <div key={field.id} className="flex items-center mb-2">
+              <FormControl className="flex-1">
+                <Input
+                  placeholder="12345"
+                  {...register(`serial.${index}`, {
+                    required: "Serial number is required",
+                    minLength: { value: 5, message: "Serial number must be at least 5 characters" }
+                  })}
+                />
+              </FormControl>
+              <Button
+                type="button"
+                onClick={() => remove(index)}
+                variant="destructive"
+                size="sm"
+                className="ml-2"
+              >
+                Remove
+              </Button>
+            </div>
+          ))}
+        </div>
+        <Button
+          type="button"
+          onClick={() => append("")}
+          variant="secondary"
+          size="sm"
+          className="mt-2"
+        >
+          Add Serial Number
+        </Button>
+      </div>
+    </FormItem>
+  )}
+/>
+
+
+
+
             <FormField
               control={methods.control}
               name="company"
