@@ -1,7 +1,8 @@
+import { useEffect, useState } from 'react';
 import { db } from "../config/firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -58,10 +59,27 @@ const AddShippingForm = () => {
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control: form.control,
     name: "serial",
   });
+
+  const amount = useWatch({
+    control: form.control,
+    name: "amount",
+  });
+
+  const [prevAmount, setPrevAmount] = useState(amount);
+
+  useEffect(() => {
+    const serialCount = parseInt(amount) || 1;
+
+    if (amount !== prevAmount) {
+      const serialFields = Array(serialCount).fill("");
+      replace(serialFields);
+      setPrevAmount(amount);
+    }
+  }, [amount, prevAmount, replace]);
 
   const onSubmit = async (data) => {
     toast({
@@ -161,30 +179,23 @@ const AddShippingForm = () => {
             )}
           />
           <div className="col-span-1 md:col-span-2">
-            <FormLabel>Serial Numbers</FormLabel>
+            <FormLabel>Serial#</FormLabel>
             {fields.map((item, index) => (
               <div key={item.id} className="flex items-center gap-2 mb-2">
                 <FormControl className="flex-1">
                   <Input placeholder="12345" {...form.register(`serial.${index}`)} />
                 </FormControl>
-                <Button
-                  type="button"
-                  onClick={() => remove(index)}
-                  className="bg-red-500 text-white p-2 h-8 w-8 flex items-center justify-center  hover:bg-red-700"
-                >
-                  x
-                </Button>
+                {/* {fields.length > 1 && (
+                  <Button
+                    type="button"
+                    onClick={() => remove(index)}
+                    className="bg-red-500 text-white p-2 h-8 w-8 flex items-center justify-center hover:bg-red-700"
+                  >
+                    X
+                  </Button>
+                )} */}
               </div>
             ))}
-            <div className="flex justify-center">
-              <Button
-                type="button"
-                onClick={() => append("")}
-                className="bg-blue-500 text-white px-4 py-2 mt-2 text-sm  hover:bg-blue-700"
-              >
-                Add Serial Number
-              </Button>
-            </div>
           </div>
           <FormField
             control={form.control}
