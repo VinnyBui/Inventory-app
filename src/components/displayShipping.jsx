@@ -4,6 +4,7 @@ import { db } from "../config/firebase";
 import { getDocs, collection, doc, deleteDoc } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
+import { toast } from "@/components/ui/use-toast";
 import {
   Card,
   CardContent,
@@ -130,10 +131,50 @@ const DisplayShipping = () => {
                         <DropdownMenuItem
                           onClick={(e) => {
                             e.stopPropagation();
-                            navigator.clipboard.writeText(item.id);
+                            const serialNumbers = item.Serial.join(", ");
+                            navigator.clipboard.writeText(serialNumbers)
+                              .then(() => {
+                                toast({
+                                  title: "Copied!",
+                                  description: "All serial numbers copied to clipboard.",
+                                  variant: "success",
+                                });
+                              })
+                              .catch((err) => {
+                                toast({
+                                  title: "Error!",
+                                  description: "Failed to copy serial numbers.",
+                                  variant: "destructive",
+                                });
+                                console.error("Failed to copy serial numbers: ", err);
+                              });
                           }}
                         >
-                          Copy Serial#
+                          Copy All Serial#
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const trackingNumber = item.Tracking;
+                            navigator.clipboard.writeText(trackingNumber)
+                              .then(() => {
+                                toast({
+                                  title: "Copied!",
+                                  description: "Tracking number copied to clipboard.",
+                                  variant: "success",
+                                });
+                              })
+                              .catch((err) => {
+                                toast({
+                                  title: "Error!",
+                                  description: "Failed to copy Tracking number.",
+                                  variant: "destructive",
+                                });
+                                console.error("Failed to copy Tracking number: ", err);
+                              });
+                          }}
+                        >
+                          Copy Tracking#
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={(e) => handleEdit(e, item)}>
