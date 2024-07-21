@@ -112,7 +112,33 @@ const AddShippingForm = () => {
         variant: "destructive",
       });
     }
-  }
+  };
+
+  useEffect(() => {
+    const handleValidationErrors = () => {
+      const errors = form.formState.errors;
+      if (Object.keys(errors).length > 0) {
+        Object.keys(errors).forEach((key) => {
+          if (Array.isArray(errors[key])) {
+            errors[key].forEach((error, index) => {
+              toast({
+                title: `Error in ${key}[${index}]`,
+                description: error.message,
+                variant: "destructive",
+              });
+            });
+          } else {
+            toast({
+              title: `Error in ${key}`,
+              description: errors[key]?.message,
+              variant: "destructive",
+            });
+          }
+        });
+      }
+    };
+    handleValidationErrors();
+  }, [form.formState.errors]);
 
   return (
     <div className="flex items-center justify-center">
@@ -127,7 +153,6 @@ const AddShippingForm = () => {
                 <FormControl>
                   <Input placeholder="IBuy" {...field} />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -140,7 +165,6 @@ const AddShippingForm = () => {
                 <FormControl>
                   <Input placeholder="PO" {...field} />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -153,7 +177,6 @@ const AddShippingForm = () => {
                 <FormControl>
                   <Input type="date" {...field} />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -166,7 +189,6 @@ const AddShippingForm = () => {
                 <FormControl>
                   <Input placeholder="Cisco Router" {...field} />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -179,7 +201,6 @@ const AddShippingForm = () => {
                 <FormControl>
                   <Input type="number" placeholder="1" {...field} />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -192,7 +213,6 @@ const AddShippingForm = () => {
                 <FormControl>
                   <Input placeholder="IBuy" {...field} />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -207,14 +227,9 @@ const AddShippingForm = () => {
                     {fields.map((item, index) => (
                       <FormItem key={item.id}>
                         <FormControl className="flex-1">
-                          <Input placeholder="12345" {...form.register(`serial.${index}`, { required: true, minLength: 5 })} />
+                          <Input placeholder="12345" />
                         </FormControl>
                         <Separator className="my-2" />
-                        {form.formState.errors.serial?.[index]?.message && (
-                          <FormMessage>
-                            {form.formState.errors.serial[index].message}
-                          </FormMessage>
-                        )}
                       </FormItem>
                     ))}
                   </div>
@@ -231,7 +246,6 @@ const AddShippingForm = () => {
                 <FormControl>
                   <Textarea placeholder="Additional information" {...field} />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
