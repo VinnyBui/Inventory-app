@@ -3,6 +3,7 @@ import { useOutletContext } from 'react-router-dom';
 import { db } from "../config/firebase";
 import { getDocs, collection, doc, deleteDoc } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
+import { MoreHorizontal } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -18,6 +19,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import PaginationComponent from './pagination';
 
 const DisplayInventory = () => {
@@ -95,15 +104,53 @@ const DisplayInventory = () => {
                   <TableCell className="">{item.Serial || 'N/A'}</TableCell>
                   <TableCell className="">{item.Location || 'N/A'}</TableCell>
                   <TableCell className="text-right">
-                    <Button
-                      variant="destructive"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(item.id);
-                      }}
-                    >
-                      Delete
-                    </Button>
+                  <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0" onClick={(e) => e.stopPropagation()}>
+                          <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const serialNumbers = item.Serial.join(", ");
+                            navigator.clipboard.writeText(serialNumbers)
+                              .then(() => {
+                                toast({
+                                  title: "Copied!",
+                                  description: "All serial numbers copied to clipboard.",
+                                  variant: "success",
+                                });
+                              })
+                              .catch((err) => {
+                                toast({
+                                  title: "Error!",
+                                  description: "Failed to copy serial numbers.",
+                                  variant: "destructive",
+                                });
+                                console.error("Failed to copy serial numbers: ", err);
+                              });
+                          }}
+                        >
+                          Copy All Serial#
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={(e) => handleEdit(e, item)}>
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(item.id);
+                          }}
+                        >
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               ))}
