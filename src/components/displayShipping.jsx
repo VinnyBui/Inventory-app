@@ -36,8 +36,8 @@ const DisplayShipping = () => {
   const itemsCollectionRef = collection(db, "Shipping");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const [open, setOpen] = useState(false); // Add state for dialog visibility
-  const [selectedItem, setSelectedItem] = useState(null); // Add state for selected item
+  const [open, setOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(() => {
     const getItems = async () => {
@@ -81,7 +81,8 @@ const DisplayShipping = () => {
 
   const totalPages = Math.ceil(items.length / itemsPerPage);
 
-  const handleEdit = (item) => {
+  const handleEdit = (e, item) => {
+    e.stopPropagation(); // Prevent the click event from propagating
     setSelectedItem(item);
     setOpen(true);
   };
@@ -119,7 +120,7 @@ const DisplayShipping = () => {
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
+                        <Button variant="ghost" className="h-8 w-8 p-0" onClick={(e) => e.stopPropagation()}>
                           <span className="sr-only">Open menu</span>
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
@@ -127,12 +128,15 @@ const DisplayShipping = () => {
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
-                          onClick={() => navigator.clipboard.writeText(item.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigator.clipboard.writeText(item.id);
+                          }}
                         >
                           Copy Serial#
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => handleEdit(item)}>
+                        <DropdownMenuItem onClick={(e) => handleEdit(e, item)}>
                           Edit
                         </DropdownMenuItem>
                         <DropdownMenuItem
@@ -157,7 +161,7 @@ const DisplayShipping = () => {
         totalPages={totalPages}
         handlePageChange={handlePageChange}
       />
-      {selectedItem && ( // Render the EditShippingForm component when an item is selected
+      {selectedItem && (
         <EditShippingForm
           open={open}
           setOpen={setOpen}
