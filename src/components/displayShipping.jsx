@@ -123,7 +123,7 @@ const DisplayShipping = () => {
                         <DropdownMenuItem
                           onClick={() => navigator.clipboard.writeText(payment.id)}
                         >
-                          Copy payment ID
+                          Copy Serial#
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>Edit</DropdownMenuItem>

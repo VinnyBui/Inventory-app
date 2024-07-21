@@ -84,15 +84,6 @@ const AddShippingForm = () => {
   }, [amount, prevAmount, replace]);
 
   const onSubmit = async (data) => {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-
     try {
       const itemsCollectionRef = collection(db, 'Shipping');
       const docRef = await addDoc(itemsCollectionRef, {
@@ -103,11 +94,23 @@ const AddShippingForm = () => {
         PO: data.PO,
         Tracking: data.tracking,
         Date: data.date,
-        Notes: data.notes || "", // Provide a default value if notes is undefined
+        Notes: data.notes || "", 
       });
       console.log("Document added with ID: ", docRef.id);
+
+      toast({
+        title: "Success!",
+        description: "Document added successfully.",
+        variant: "success",
+      });
     } catch (e) {
       console.error("Error adding document: ", e);
+
+      toast({
+        title: "Error!",
+        description: "There was an error adding the document.",
+        variant: "destructive",
+      });
     }
   }
 
