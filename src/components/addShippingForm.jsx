@@ -1,7 +1,7 @@
 import { db } from "../config/firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,9 +23,11 @@ const FormSchema = z.object({
   amount: z.string().min(1, {
     message: "Amount must be at least 1 character.",
   }),
-  serial: z.string().min(5, {
-    message: "Serial number must be at least 5 characters.",
-  }),
+  serial: z.array(
+    z.string().min(5, {
+      message: "Serial number must be at least 5 characters.",
+    })
+  ).min(1, { message: "Must have at least one serial number." }),
   company: z.string().min(1, {
     message: "Company name must be at least 1 character.",
   }),
@@ -47,13 +49,18 @@ const AddShippingForm = () => {
     defaultValues: {
       name: "",
       amount: "",
-      serial: "",
+      serial: [""], // Initialize with one empty serial number input
       company: "",
       PO: "",
       tracking: "",
       date: "",
       notes: "", // Ensure notes is initialized as an empty string
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "serial",
   });
 
   const onSubmit = async (data) => {
@@ -153,19 +160,32 @@ const AddShippingForm = () => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="serial"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Serial#</FormLabel>
-                <FormControl>
-                  <Input placeholder="12345" {...field} />
+          <div className="col-span-1 md:col-span-2">
+            <FormLabel>Serial Numbers</FormLabel>
+            {fields.map((item, index) => (
+              <div key={item.id} className="flex items-center gap-2 mb-2">
+                <FormControl className="flex-1">
+                  <Input placeholder="12345" {...form.register(`serial.${index}`)} />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                <Button
+                  type="button"
+                  onClick={() => remove(index)}
+                  className="bg-red-500 text-white p-2 h-8 w-8 flex items-center justify-center  hover:bg-red-700"
+                >
+                  x
+                </Button>
+              </div>
+            ))}
+            <div className="flex justify-center">
+              <Button
+                type="button"
+                onClick={() => append("")}
+                className="bg-blue-500 text-white px-4 py-2 mt-2 text-sm  hover:bg-blue-700"
+              >
+                Add Serial Number
+              </Button>
+            </div>
+          </div>
           <FormField
             control={form.control}
             name="tracking"

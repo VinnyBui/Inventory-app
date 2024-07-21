@@ -58,8 +58,19 @@ const DisplayItem = () => {
             <div>Company: {item?.Company}</div>
             <div>PO: {item?.PO}</div>
             <div>Date: {item?.Date}</div>
-            <div>Serial: {item?.Serial}</div>
-            <div>Tracking: {item?.Tracking}</div>
+            <div>
+              Serial#: 
+              {Array.isArray(item?.Serial) ? (
+                <ul>
+                  {item.Serial.map((serial, index) => (
+                    <li key={index}>{serial}</li>
+                  ))}
+                </ul>
+              ) : (
+                <span>{item?.Serial}</span>
+              )}
+            </div>
+            <div>Tracking#: {item?.Tracking}</div>
             <div>Notes: {item?.Notes}</div>
           </>
         )}

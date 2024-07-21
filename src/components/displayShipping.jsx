@@ -101,7 +101,7 @@ const DisplayShipping = () => {
                   <TableCell className="">{item.Date}</TableCell>
                   <TableCell className="">{item.Name}</TableCell>
                   <TableCell className="">{item.Amount}</TableCell>
-                  <TableCell className="">{item.Serial}</TableCell>
+                  <TableCell className="">{item.Serial[0]}</TableCell>
                   <TableCell className="">{item.Tracking}</TableCell>
                   <TableCell className="text-right">
                     <Button
