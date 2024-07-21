@@ -3,7 +3,7 @@ import { useOutletContext } from 'react-router-dom';
 import { db } from "../config/firebase";
 import { getDocs, collection, doc, deleteDoc } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import {
   Card,
@@ -39,6 +39,7 @@ const DisplayShipping = () => {
   const itemsPerPage = 10;
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [sortConfig, setSortConfig] = useState({ key: 'Date', direction: 'ascending' });
 
   useEffect(() => {
     const getItems = async () => {
@@ -64,6 +65,30 @@ const DisplayShipping = () => {
     (item.Date?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
+  const sortedItems = React.useMemo(() => {
+    let sortableItems = [...filteredItems];
+    if (sortConfig !== null) {
+      sortableItems.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [filteredItems, sortConfig]);
+
+  const requestSort = key => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
   const handleDelete = async (id) => {
     try {
       await deleteDoc(doc(db, "Shipping", id));
@@ -80,13 +105,13 @@ const DisplayShipping = () => {
     }
   };
 
-  const totalPages = Math.ceil(items.length / itemsPerPage);
-
   const handleEdit = (e, item) => {
     e.stopPropagation(); 
     setSelectedItem(item);
     setOpen(true);
   };
+
+  const totalPages = Math.ceil(items.length / itemsPerPage);
 
   return (
     <div>
@@ -101,14 +126,22 @@ const DisplayShipping = () => {
               <TableRow>
                 <TableHead>Company</TableHead>
                 <TableHead className="">PO</TableHead>
-                <TableHead className="">Date</TableHead>
+                <TableHead className="">
+                  <Button
+                    variant="ghost"
+                    onClick={() => requestSort('Date')}
+                  >
+                    Date
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </TableHead>
                 <TableHead className="">Name</TableHead>
                 <TableHead className="">Amount</TableHead>
                 <TableHead className="">Notes</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item) => (
+              {sortedItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item) => (
                 <TableRow key={item.id} onClick={() => handleItemClick(item.id, 'shipping')}>
                   <TableCell>
                     <div className="font-medium">{item.Company}</div>
