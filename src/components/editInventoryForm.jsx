@@ -55,7 +55,7 @@ const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => 
     },
   });
 
-  const { reset, handleSubmit, register, control, watch } = methods;
+  const { reset, handleSubmit, register, control } = methods;
   const { fields, append, remove } = useFieldArray({
     control,
     name: "serial",
@@ -68,7 +68,7 @@ const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => 
         amount: selectedItem.Amount,
         serial: selectedItem.Serial,
         location: selectedItem.Location,
-        notes: selectedItem.Notes,
+        notes: selectedItem.Notes || "",
       });
     }
   }, [selectedItem, reset]);
@@ -76,13 +76,13 @@ const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => 
   const onSubmit = async (data) => {
     if (selectedItem) {
       try {
-        const itemDocRef = doc(db, 'Inventory', selectedItem.id);
+        const itemDocRef = doc(db, 'Items', selectedItem.id);
         await updateDoc(itemDocRef, {
           Name: data.name,
           Amount: data.amount,
           Serial: data.serial,
           Location: data.location,
-          Notes: data.notes,
+          Notes: data.notes || "",  // Ensure Notes has a default value
         });
 
         toast({

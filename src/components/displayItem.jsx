@@ -52,6 +52,7 @@ const DisplayItem = () => {
             <div>Location: {item?.Location}</div>
             <div>Serial: {item?.Serial}</div>
             <div>Amount: {item?.Amount}</div>
+            <div>Notes: {item?.Notes}</div>
           </>
         ) : (
           <>
