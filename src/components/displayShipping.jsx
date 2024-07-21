@@ -150,7 +150,7 @@ const DisplayShipping = () => {
                               });
                           }}
                         >
-                          Copy All Serial#
+                          Copy Serial#
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={(e) => {
