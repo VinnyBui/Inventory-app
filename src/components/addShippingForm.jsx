@@ -196,21 +196,32 @@ const AddShippingForm = () => {
               </FormItem>
             )}
           />
-          <div className="col-span-1 md:col-span-2">
-            <FormLabel>Serial#</FormLabel>
-            <ScrollArea className="h-52 w-48 rounded-md ">
-              <div className="p-4">
-                {fields.map((item, index) => (
-                  <div key={item.id}>
-                    <FormControl className="flex-1">
-                      <Input placeholder="12345" {...form.register(`serial.${index}`)} />
-                    </FormControl>
-                    <Separator className="my-2" />
+          <FormField
+            control={form.control}
+            name="serial"
+            render={() => (
+              <div className="col-span-1 md:col-span-2">
+                <FormLabel>Serial#</FormLabel>
+                <ScrollArea className="h-52 w-48 rounded-md">
+                  <div className="p-4">
+                    {fields.map((item, index) => (
+                      <FormItem key={item.id}>
+                        <FormControl className="flex-1">
+                          <Input placeholder="12345" {...form.register(`serial.${index}`, { required: true, minLength: 5 })} />
+                        </FormControl>
+                        <Separator className="my-2" />
+                        {form.formState.errors.serial?.[index]?.message && (
+                          <FormMessage>
+                            {form.formState.errors.serial[index].message}
+                          </FormMessage>
+                        )}
+                      </FormItem>
+                    ))}
                   </div>
-                ))}
+                </ScrollArea>
               </div>
-            </ScrollArea>
-          </div>
+            )}
+          />
           <FormField
             control={form.control}
             name="notes"
