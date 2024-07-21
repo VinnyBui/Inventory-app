@@ -63,7 +63,7 @@ const DisplayItem = () => {
               {Array.isArray(item?.Serial) ? (
                 <ul>
                   {item.Serial.map((serial, index) => (
-                    <li key={index}>{serial}</li>
+                    <li key={index}>- {serial}</li>
                   ))}
                 </ul>
               ) : (

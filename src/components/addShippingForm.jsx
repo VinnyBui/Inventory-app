@@ -16,6 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -112,7 +114,7 @@ const AddShippingForm = () => {
   return (
     <div className="flex items-center justify-center">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-4 p-8 rounded shadow-md">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-3 gap-4 p-8 rounded shadow-md">
           <FormField
             control={form.control}
             name="company"
@@ -178,25 +180,6 @@ const AddShippingForm = () => {
               </FormItem>
             )}
           />
-          <div className="col-span-1 md:col-span-2">
-            <FormLabel>Serial#</FormLabel>
-            {fields.map((item, index) => (
-              <div key={item.id} className="flex items-center gap-2 mb-2">
-                <FormControl className="flex-1">
-                  <Input placeholder="12345" {...form.register(`serial.${index}`)} />
-                </FormControl>
-                {/* {fields.length > 1 && (
-                  <Button
-                    type="button"
-                    onClick={() => remove(index)}
-                    className="bg-red-500 text-white p-2 h-8 w-8 flex items-center justify-center hover:bg-red-700"
-                  >
-                    X
-                  </Button>
-                )} */}
-              </div>
-            ))}
-          </div>
           <FormField
             control={form.control}
             name="tracking"
@@ -210,11 +193,26 @@ const AddShippingForm = () => {
               </FormItem>
             )}
           />
+          <div className="col-span-1 md:col-span-2">
+            <FormLabel>Serial#</FormLabel>
+            <ScrollArea className="h-52 w-48 rounded-md ">
+              <div className="p-4">
+                {fields.map((item, index) => (
+                  <div key={item.id}>
+                    <FormControl className="flex-1">
+                      <Input placeholder="12345" {...form.register(`serial.${index}`)} />
+                    </FormControl>
+                    <Separator className="my-2" />
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
           <FormField
             control={form.control}
             name="notes"
             render={({ field }) => (
-              <FormItem className="col-span-1 md:col-span-2">
+              <FormItem className="col-span-1 md:col-span-3">
                 <FormLabel>Notes</FormLabel>
                 <FormControl>
                   <Textarea placeholder="Additional information" {...field} />
@@ -223,7 +221,7 @@ const AddShippingForm = () => {
               </FormItem>
             )}
           />
-          <div className="col-span-1 md:col-span-2">
+          <div className="col-span-1 md:col-span-3">
             <Button type="submit" className="w-full">Submit</Button>
           </div>
         </form>
