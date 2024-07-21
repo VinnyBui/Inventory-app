@@ -3,7 +3,7 @@ import { useOutletContext } from 'react-router-dom';
 import { db } from "../config/firebase";
 import { getDocs, collection, doc, deleteDoc } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -21,15 +21,14 @@ import {
 } from "@/components/ui/table";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import PaginationComponent from './pagination';
-
+import EditShippingForm from './editShippingForm'; 
 
 const DisplayShipping = () => {
   const { searchQuery, handleItemClick } = useOutletContext();
@@ -37,6 +36,8 @@ const DisplayShipping = () => {
   const itemsCollectionRef = collection(db, "Shipping");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [open, setOpen] = useState(false); // Add state for dialog visibility
+  const [selectedItem, setSelectedItem] = useState(null); // Add state for selected item
 
   useEffect(() => {
     const getItems = async () => {
@@ -80,6 +81,11 @@ const DisplayShipping = () => {
 
   const totalPages = Math.ceil(items.length / itemsPerPage);
 
+  const handleEdit = (item) => {
+    setSelectedItem(item);
+    setOpen(true);
+  };
+
   return (
     <div>
       <Card>
@@ -121,19 +127,21 @@ const DisplayShipping = () => {
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
-                          onClick={() => navigator.clipboard.writeText(payment.id)}
+                          onClick={() => navigator.clipboard.writeText(item.id)}
                         >
                           Copy Serial#
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleEdit(item)}>
+                          Edit
+                        </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={(e) => {
                             e.stopPropagation();
                             handleDelete(item.id);
                           }}
                         >
-                            Delete
+                          Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -149,6 +157,14 @@ const DisplayShipping = () => {
         totalPages={totalPages}
         handlePageChange={handlePageChange}
       />
+      {selectedItem && ( // Render the EditShippingForm component when an item is selected
+        <EditShippingForm
+          open={open}
+          setOpen={setOpen}
+          selectedItem={selectedItem}
+          setSelectedItem={setSelectedItem}
+        />
+      )}
     </div>
   );
 };
