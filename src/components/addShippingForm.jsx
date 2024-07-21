@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { db } from "../config/firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useFieldArray, useWatch } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -60,27 +60,10 @@ const AddShippingForm = () => {
     },
   });
 
-  const { fields, append, remove, replace } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "serial",
   });
-
-  const amount = useWatch({
-    control: form.control,
-    name: "amount",
-  });
-
-  const [prevAmount, setPrevAmount] = useState(amount);
-
-  useEffect(() => {
-    const serialCount = parseInt(amount) || 1;
-
-    if (amount !== prevAmount) {
-      const serialFields = Array(serialCount).fill("");
-      replace(serialFields);
-      setPrevAmount(amount);
-    }
-  }, [amount, prevAmount, replace]);
 
   const onSubmit = async (data) => {
     try {
@@ -220,24 +203,41 @@ const AddShippingForm = () => {
             name="serial"
             render={() => (
               <div className="col-span-1 md:col-span-2">
-                <FormLabel>Serial#</FormLabel>
-                <ScrollArea className="h-52 w-48 rounded-md">
+                <FormLabel>Serial# (Count: {fields.length})</FormLabel>
+                <ScrollArea className="h-52 w-full rounded-md">
                   <div className="p-4">
                     {fields.map((item, index) => (
-                      <FormItem key={item.id}>
+                      <div key={item.id} className="flex items-center mb-2">
                         <FormControl className="flex-1">
-                        <Input 
-                          placeholder="12345"
-                          {...form.register(`serial.${index}`, {
-                            required: "Serial number is required",
-                            minLength: { value: 5, message: "Serial number must be at least 5 characters" }
-                          })}
-                        />
+                          <Input 
+                            placeholder="12345"
+                            {...form.register(`serial.${index}`, {
+                              required: "Serial number is required",
+                              minLength: { value: 5, message: "Serial number must be at least 5 characters" }
+                            })}
+                          />
                         </FormControl>
-                        <Separator className="my-2" />
-                      </FormItem>
+                        <Button
+                          type="button"
+                          onClick={() => remove(index)}
+                          variant="destructive"
+                          size="sm"
+                          className="ml-2"
+                        >
+                          Remove
+                        </Button>
+                      </div>
                     ))}
                   </div>
+                  <Button
+                    type="button"
+                    onClick={() => append("")}
+                    variant="secondary"
+                    size="sm"
+                    className="mt-2"
+                  >
+                    Add Serial Number
+                  </Button>
                 </ScrollArea>
               </div>
             )}
