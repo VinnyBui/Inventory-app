@@ -64,14 +64,14 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
   useEffect(() => {
     if (selectedItem) {
       reset({
-        name: selectedItem.name,
-        amount: selectedItem.amount,
-        serial: selectedItem.serial,
-        company: selectedItem.company,
+        name: selectedItem.Name,
+        amount: selectedItem.Amount,
+        serial: selectedItem.Serial,
+        company: selectedItem.Company,
         PO: selectedItem.PO,
-        tracking: selectedItem.tracking,
-        date: selectedItem.date,
-        notes: selectedItem.notes,
+        tracking: selectedItem.Tracking,
+        date: selectedItem.Date,
+        notes: selectedItem.Notes,
       });
     }
   }, [selectedItem, reset]);
@@ -81,14 +81,14 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
       try {
         const itemDocRef = doc(db, 'Shipping', selectedItem.id);
         await updateDoc(itemDocRef, {
-          name: data.name,
-          amount: data.amount,
-          serial: data.serial,
-          company: data.company,
+          Name: data.name,
+          Amount: data.amount,
+          Serial: data.serial,
+          Company: data.company,
           PO: data.PO,
-          tracking: data.tracking,
-          date: data.date,
-          notes: data.notes,
+          Tracking: data.tracking,
+          Date: data.date,
+          Notes: data.notes,
         });
 
         toast({
