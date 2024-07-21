@@ -83,7 +83,7 @@ const DisplayShipping = () => {
   const totalPages = Math.ceil(items.length / itemsPerPage);
 
   const handleEdit = (e, item) => {
-    e.stopPropagation(); // Prevent the click event from propagating
+    e.stopPropagation(); 
     setSelectedItem(item);
     setOpen(true);
   };

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useForm, FormProvider, useFieldArray  } from "react-hook-form";
+import { useForm, FormProvider, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -37,39 +37,27 @@ const FormSchema = z.object({
       message: "Serial number must be at least 5 characters.",
     })
   ).min(1, { message: "Must have at least one serial number." }),
-  company: z.string().min(1, {
-    message: "Company name must be at least 1 character.",
-  }),
-  PO: z.string().min(1, {
-    message: "PO must be at least 1 character.",
-  }),
-  tracking: z.string().min(1, {
-    message: "Tracking number must be at least 1 character.",
-  }),
-  date: z.string().min(1, {
-    message: "Date must be at least 1 character.",
+  location: z.string().min(1, {
+    message: "Location must be at least 1 character.",
   }),
   notes: z.string().optional(),
 });
 
-const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
+const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
   const methods = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       name: "",
       amount: "",
       serial: [""],
-      company: "",
-      PO: "",
-      tracking: "",
-      date: "",
+      location: "",
       notes: "",
     },
   });
 
-  const { reset, handleSubmit, register, watch, control } = methods;
+  const { reset, handleSubmit, register, control, watch } = methods;
   const { fields, append, remove } = useFieldArray({
-    control: methods.control,
+    control,
     name: "serial",
   });
 
@@ -79,10 +67,7 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
         name: selectedItem.Name,
         amount: selectedItem.Amount,
         serial: selectedItem.Serial,
-        company: selectedItem.Company,
-        PO: selectedItem.PO,
-        tracking: selectedItem.Tracking,
-        date: selectedItem.Date,
+        location: selectedItem.Location,
         notes: selectedItem.Notes,
       });
     }
@@ -91,15 +76,12 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
   const onSubmit = async (data) => {
     if (selectedItem) {
       try {
-        const itemDocRef = doc(db, 'Shipping', selectedItem.id);
+        const itemDocRef = doc(db, 'Inventory', selectedItem.id);
         await updateDoc(itemDocRef, {
           Name: data.name,
           Amount: data.amount,
           Serial: data.serial,
-          Company: data.company,
-          PO: data.PO,
-          Tracking: data.tracking,
-          Date: data.date,
+          Location: data.location,
           Notes: data.notes,
         });
 
@@ -126,9 +108,9 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-h-[75vh] overflow-y-auto custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Edit Shipping Item</DialogTitle>
+          <DialogTitle>Edit Inventory Item</DialogTitle>
           <DialogDescription>
-            Make changes to the shipping item details below.
+            Make changes to the inventory item details below.
           </DialogDescription>
         </DialogHeader>
         <FormProvider {...methods}>
@@ -203,48 +185,12 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
             />
             <FormField
               control={methods.control}
-              name="company"
+              name="location"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Company</FormLabel>
+                  <FormLabel>Location</FormLabel>
                   <FormControl>
-                    <Input placeholder="Company Name" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={methods.control}
-              name="PO"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>PO</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Purchase Order" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={methods.control}
-              name="tracking"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tracking#</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Tracking Number" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={methods.control}
-              name="date"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Date</FormLabel>
-                  <FormControl>
-                    <Input type="date" placeholder="Date" {...field} />
+                    <Input placeholder="Location" {...field} />
                   </FormControl>
                 </FormItem>
               )}
@@ -271,4 +217,4 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
   );
 };
 
-export default EditShippingForm;
+export default EditInventoryForm;

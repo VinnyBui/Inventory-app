@@ -28,13 +28,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import PaginationComponent from './pagination';
+import EditInventoryForm from './editInventoryForm'; 
 
 const DisplayInventory = () => {
   const { searchQuery, handleItemClick } = useOutletContext();
   const [items, setItems] = useState([]);
-  const itemsCollectionRef = collection(db, "Items");
+  const itemsCollectionRef = collection(db, "Inventory");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [open, setOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(() => {
     const getItems = async () => {
@@ -75,6 +78,12 @@ const DisplayInventory = () => {
     }
   };
 
+  const handleEdit = (e, item) => {
+    e.stopPropagation(); 
+    setSelectedItem(item);
+    setOpen(true);
+  };
+
   const totalPages = Math.ceil(items.length / itemsPerPage);
 
   return (
@@ -101,7 +110,7 @@ const DisplayInventory = () => {
                     <div className="font-medium">{item.Name || 'N/A'}</div>
                   </TableCell>
                   <TableCell className="">{item.Amount || 'N/A'}</TableCell>
-                  <TableCell className="">{item.Serial || 'N/A'}</TableCell>
+                  <TableCell className="">{item.Serial[0] || 'N/A'}</TableCell>
                   <TableCell className="">{item.Location || 'N/A'}</TableCell>
                   <TableCell className="text-right">
                   <DropdownMenu>
@@ -163,6 +172,14 @@ const DisplayInventory = () => {
         totalPages={totalPages}
         handlePageChange={handlePageChange}
       />
+      {selectedItem && (
+        <EditInventoryForm
+          open={open}
+          setOpen={setOpen}
+          selectedItem={selectedItem}
+          setSelectedItem={setSelectedItem}
+        />
+      )}
     </div>
   );
 };
