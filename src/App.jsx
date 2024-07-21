@@ -8,7 +8,7 @@ import { Toaster } from "@/components/ui/toaster";
 const Dashboard = lazy(() => import('./components/dashboard'));
 const Authorize = lazy(() => import('./components/authorize'));
 const DisplayInventory = lazy(() => import('./components/displayInventory'));
-const AddForm = lazy(() => import('./components/addForm'));
+const AddForm = lazy(() => import('./components/addInventoryForm'));
 const DisplayShipping = lazy(() => import('./components/displayShipping'));
 const AddShippingForm = lazy(() => import('./components/addShippingForm'));
 const DisplayItem = lazy(() => import('./components/displayItem')); 
