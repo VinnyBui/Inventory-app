@@ -120,7 +120,7 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-h-[75vh] overflow-y-auto">
+      <DialogContent className="max-h-[75vh] overflow-y-auto custom-scrollbar">
         <DialogHeader>
           <DialogTitle>Edit Shipping Item</DialogTitle>
           <DialogDescription>
@@ -159,7 +159,7 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
               render={() => (
                 <FormItem>
                   <FormLabel>Serial#</FormLabel>
-                  <div className="max-h-40 overflow-y-auto">
+                  <div className="max-h-40 overflow-y-auto custom-scrollbar">
                     <div className="p-4">
                       {watch('serial').map((serial, index) => (
                         <div key={index} className="mb-2">
