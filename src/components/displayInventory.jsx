@@ -98,9 +98,9 @@ const DisplayInventory = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead className="">Amount</TableHead>
-                <TableHead className="">Serial#</TableHead>
-                <TableHead className="">Location</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Location</TableHead>
+                <TableHead>Notes</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -110,8 +110,8 @@ const DisplayInventory = () => {
                     <div className="font-medium">{item.Name || 'N/A'}</div>
                   </TableCell>
                   <TableCell className="">{item.Amount || 'N/A'}</TableCell>
-                  <TableCell className="">{item.Serial[0] || 'N/A'}</TableCell>
                   <TableCell className="">{item.Location || 'N/A'}</TableCell>
+                  <TableCell className="">{item.Notes || 'N/A'}</TableCell>
                   <TableCell className="text-right">
                   <DropdownMenu>
                       <DropdownMenuTrigger asChild>
