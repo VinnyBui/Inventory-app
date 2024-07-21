@@ -16,7 +16,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -228,7 +227,7 @@ const AddShippingForm = () => {
                         </Button>
                       </div>
                     ))}
-                  </div>
+                </div>
                   <Button
                     type="button"
                     onClick={() => append("")}

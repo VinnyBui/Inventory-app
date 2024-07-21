@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { db } from "../config/firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useFieldArray, useWatch } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -38,30 +39,15 @@ const AddInventoryForm = () => {
     defaultValues: {
       name: "",
       amount: "",
-      serial: [""], // Initialize with one empty serial number input
+      serial: [""], 
       location: "",
     },
   });
 
-  const { fields, append, remove, replace } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "serial",
   });
-
-  const amount = useWatch({
-    control: form.control,
-    name: "amount",
-  });
-
-  useEffect(() => {
-    const serialCount = parseInt(amount) || 1;
-    const currentSerialCount = fields.length;
-
-    if (serialCount !== currentSerialCount) {
-      const serialFields = Array(serialCount).fill("");
-      replace(serialFields);
-    }
-  }, [amount, fields.length, replace]);
 
   const onSubmit = async (data) => {
     try {
@@ -150,10 +136,10 @@ const AddInventoryForm = () => {
             name="serial"
             render={() => (
               <div className="col-span-1 md:col-span-2">
-                <FormLabel>Serial#</FormLabel>
+                <FormLabel>Serial# (Count: {fields.length})</FormLabel>
                 <div className="space-y-2">
                   {fields.map((item, index) => (
-                    <FormItem key={item.id}>
+                    <div key={item.id} className="flex items-center mb-2">
                       <FormControl className="flex-1">
                         <Input 
                           placeholder="12345"
@@ -163,9 +149,27 @@ const AddInventoryForm = () => {
                           })}
                         />
                       </FormControl>
-                    </FormItem>
+                      <Button
+                        type="button"
+                        onClick={() => remove(index)}
+                        variant="destructive"
+                        size="sm"
+                        className="ml-2"
+                      >
+                        Remove
+                      </Button>
+                    </div>
                   ))}
                 </div>
+                <Button
+                  type="button"
+                  onClick={() => append("")}
+                  variant="secondary"
+                  size="sm"
+                  className="mt-2"
+                >
+                  Add Serial Number
+                </Button>
               </div>
             )}
           />
