@@ -46,10 +46,8 @@ const DisplayShipping = () => {
 
   const filteredItems = items.filter(item =>
     (item.Name?.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (item.Serial?.toLowerCase().includes(searchQuery.toLowerCase())) ||
     (item.Company?.toLowerCase().includes(searchQuery.toLowerCase())) ||
     (item.PO?.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (item.Tracking?.toLowerCase().includes(searchQuery.toLowerCase())) ||
     (item.Date?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
@@ -87,8 +85,7 @@ const DisplayShipping = () => {
                 <TableHead className="">Date</TableHead>
                 <TableHead className="">Name</TableHead>
                 <TableHead className="">Amount</TableHead>
-                <TableHead className="">Serial#</TableHead>
-                <TableHead className="">Tracking#</TableHead>
+                <TableHead className="">Notes</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -101,8 +98,7 @@ const DisplayShipping = () => {
                   <TableCell className="">{item.Date}</TableCell>
                   <TableCell className="">{item.Name}</TableCell>
                   <TableCell className="">{item.Amount}</TableCell>
-                  <TableCell className="">{item.Serial[0]}</TableCell>
-                  <TableCell className="">{item.Tracking}</TableCell>
+                  <TableCell className="">{item.Notes}</TableCell>
                   <TableCell className="text-right">
                     <Button
                       variant="destructive"
