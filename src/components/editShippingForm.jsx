@@ -11,9 +11,15 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
 import { db } from "../config/firebase";
@@ -114,7 +120,7 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent>
+      <DialogContent className="max-h-[75vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Shipping Item</DialogTitle>
           <DialogDescription>
@@ -122,54 +128,118 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
           </DialogDescription>
         </DialogHeader>
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div>
-              <label>Name</label>
-              <Input placeholder="Product Name" {...register('name')} />
-            </div>
-            <div>
-              <label>Amount</label>
-              <Input type="number" placeholder="1" {...register('amount')} />
-            </div>
-            <div>
-              <label>Serial#</label>
-              <ScrollArea className="h-52 w-48 rounded-md">
-                <div className="p-4">
-                  {watch('serial').map((serial, index) => (
-                    <div key={index} className="mb-2">
-                      <Input
-                        placeholder="12345"
-                        {...register(`serial.${index}`, {
-                          required: "Serial number is required",
-                          minLength: { value: 5, message: "Serial number must be at least 5 characters" }
-                        })}
-                      />
-                      <Separator className="my-2" />
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={methods.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Product Name" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
+              name="amount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Amount</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="1" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
+              name="serial"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Serial#</FormLabel>
+                  <div className="max-h-40 overflow-y-auto">
+                    <div className="p-4">
+                      {watch('serial').map((serial, index) => (
+                        <div key={index} className="mb-2">
+                          <FormControl>
+                            <Input
+                              placeholder="12345"
+                              {...register(`serial.${index}`, {
+                                required: "Serial number is required",
+                                minLength: { value: 5, message: "Serial number must be at least 5 characters" }
+                              })}
+                            />
+                          </FormControl>
+                          <Separator className="my-2" />
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </ScrollArea>
-            </div>
-            <div>
-              <label>Company</label>
-              <Input placeholder="Company Name" {...register('company')} />
-            </div>
-            <div>
-              <label>PO</label>
-              <Input placeholder="Purchase Order" {...register('PO')} />
-            </div>
-            <div>
-              <label>Tracking#</label>
-              <Input placeholder="Tracking Number" {...register('tracking')} />
-            </div>
-            <div>
-              <label>Date</label>
-              <Input type="date" placeholder="Date" {...register('date')} />
-            </div>
-            <div>
-              <label>Notes</label>
-              <Textarea placeholder="Additional information" {...register('notes')} />
-            </div>
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
+              name="company"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Company</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Company Name" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
+              name="PO"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>PO</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Purchase Order" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
+              name="tracking"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tracking#</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Tracking Number" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
+              name="date"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Date</FormLabel>
+                  <FormControl>
+                    <Input type="date" placeholder="Date" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
+              name="notes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Notes</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Additional information" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
             <DialogFooter>
               <Button type="submit">Save Changes</Button>
             </DialogFooter>
