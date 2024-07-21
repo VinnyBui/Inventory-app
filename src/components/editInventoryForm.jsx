@@ -76,7 +76,7 @@ const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => 
   const onSubmit = async (data) => {
     if (selectedItem) {
       try {
-        const itemDocRef = doc(db, 'Items', selectedItem.id);
+        const itemDocRef = doc(db, 'Inventory', selectedItem.id);
         await updateDoc(itemDocRef, {
           Name: data.name,
           Amount: data.amount,
