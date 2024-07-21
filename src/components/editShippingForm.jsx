@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
 import { db } from "../config/firebase";
 import { doc, updateDoc } from "firebase/firestore";
@@ -131,17 +133,22 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
             </div>
             <div>
               <label>Serial#</label>
-              {watch('serial').map((serial, index) => (
-                <div key={index} className="mb-2">
-                  <Input
-                    placeholder="12345"
-                    {...register(`serial.${index}`, {
-                      required: "Serial number is required",
-                      minLength: { value: 5, message: "Serial number must be at least 5 characters" }
-                    })}
-                  />
+              <ScrollArea className="h-52 w-48 rounded-md">
+                <div className="p-4">
+                  {watch('serial').map((serial, index) => (
+                    <div key={index} className="mb-2">
+                      <Input
+                        placeholder="12345"
+                        {...register(`serial.${index}`, {
+                          required: "Serial number is required",
+                          minLength: { value: 5, message: "Serial number must be at least 5 characters" }
+                        })}
+                      />
+                      <Separator className="my-2" />
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </ScrollArea>
             </div>
             <div>
               <label>Company</label>
