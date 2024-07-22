@@ -32,24 +32,18 @@ const FormSchema = z.object({
   amount: z.string().min(1, {
     message: "Amount must be at least 1 character.",
   }),
-  serial: z.array(
-    z.string().min(5, {
-      message: "Serial number must be at least 5 characters.",
-    })
-  ).min(1, { message: "Must have at least one serial number." }),
   company: z.string().min(1, {
     message: "Company name must be at least 1 character.",
   }),
   PO: z.string().min(1, {
     message: "PO must be at least 1 character.",
   }),
-  tracking: z.string().min(1, {
-    message: "Tracking number must be at least 1 character.",
-  }),
   date: z.string().min(1, {
     message: "Date must be at least 1 character.",
   }),
   notes: z.string().optional(),
+  serial: z.array(z.string().optional()).optional(),
+  tracking: z.string().optional(),
 });
 
 const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
