@@ -18,7 +18,10 @@ const DisplayItem = () => {
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        const docRef = doc(db, type === 'inventory' ? 'Inventory' : 'Shipping', id);
+        const collectionName = 
+          type === 'inventory' ? 'Inventory' : 
+          type === 'shipping' ? 'Shipping' : 'Receiving'; // Include Receiving type
+        const docRef = doc(db, collectionName, id);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -47,7 +50,7 @@ const DisplayItem = () => {
         <CardDescription>{item?.Name}</CardDescription>
       </CardHeader>
       <CardContent>
-        {type === 'inventory' ? (
+        {type === 'inventory' && (
           <>
             <div>Location: {item?.Location}</div>
             <div>
@@ -65,7 +68,8 @@ const DisplayItem = () => {
             <div>Amount: {item?.Amount}</div>
             <div>Notes: {item?.Notes}</div>
           </>
-        ) : (
+        )}
+        {type === 'shipping' && (
           <>
             <div>Company: {item?.Company}</div>
             <div>PO: {item?.PO}</div>
@@ -83,6 +87,28 @@ const DisplayItem = () => {
               )}
             </div>
             <div>Tracking#: {item?.Tracking}</div>
+            <div>Notes: {item?.Notes}</div>
+          </>
+        )}
+        {type === 'receiving' && (
+          <>
+            <div>Company: {item?.Company}</div>
+            <div>PO: {item?.PO}</div>
+            <div>Date: {item?.Date}</div>
+            <div>
+              Serial#: 
+              {Array.isArray(item?.Serial) ? (
+                <ul>
+                  {item.Serial.map((serial, index) => (
+                    <li key={index}>- {serial}</li>
+                  ))}
+                </ul>
+              ) : (
+                <span>{item?.Serial}</span>
+              )}
+            </div>
+            <div>Tracking#: {item?.Tracking}</div>
+            <div>Address: {item?.Address}</div>
             <div>Notes: {item?.Notes}</div>
           </>
         )}
