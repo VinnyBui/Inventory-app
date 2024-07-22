@@ -93,11 +93,10 @@ const DisplayShipping = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' };
+    return date.toLocaleDateString('en-US', options); // 'en-US' format (MM/DD/YYYY)
   };
+  
 
   const handleDelete = async (id) => {
     try {
