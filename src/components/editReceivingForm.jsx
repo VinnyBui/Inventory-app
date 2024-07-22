@@ -1,0 +1,283 @@
+import React, { useEffect } from 'react';
+import { useForm, FormProvider, useFieldArray  } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/use-toast";
+import { db } from "../config/firebase";
+import { doc, updateDoc } from "firebase/firestore";
+
+const FormSchema = z.object({
+  name: z.string().min(2, {
+    message: "Product name must be at least 2 characters.",
+  }),
+  amount: z.string().min(1, {
+    message: "Amount must be at least 1 character.",
+  }),
+  company: z.string().min(1, {
+    message: "Company name must be at least 1 character.",
+  }),
+  PO: z.string().min(1, {
+    message: "PO must be at least 1 character.",
+  }),
+  date: z.string().min(1, {
+    message: "Date must be at least 1 character.",
+  }),
+  serial: z.array(z.string().optional()).optional(), 
+  tracking: z.string().optional(),
+  notes: z.string().optional(),
+  address: z.string().optional(),
+});
+
+const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
+  const methods = useForm({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      name: "",
+      amount: "",
+      serial: [""],
+      company: "",
+      PO: "",
+      tracking: "",
+      date: "",
+      notes: "",
+      address: "",
+    },
+  });
+
+  const { reset, handleSubmit, register, watch, control } = methods;
+  const { fields, append, remove } = useFieldArray({
+    control: methods.control,
+    name: "serial",
+  });
+
+  useEffect(() => {
+    if (selectedItem) {
+      reset({
+        name: selectedItem.Name,
+        amount: selectedItem.Amount,
+        serial: selectedItem.Serial,
+        company: selectedItem.Company,
+        PO: selectedItem.PO,
+        tracking: selectedItem.Tracking,
+        date: selectedItem.Date,
+        notes: selectedItem.Notes,
+        address: selectedItem.Address,
+      });
+    }
+  }, [selectedItem, reset]);
+
+  const onSubmit = async (data) => {
+    if (selectedItem) {
+      try {
+        const itemDocRef = doc(db, 'Receiving', selectedItem.id);
+        await updateDoc(itemDocRef, {
+          Name: data.name,
+          Amount: data.amount,
+          Serial: data.serial,
+          Company: data.company,
+          PO: data.PO,
+          Tracking: data.tracking,
+          Date: data.date,
+          Notes: data.notes,
+          Address: data.address,
+        });
+        form.reset();
+        toast({
+          title: "Success!",
+          description: "Document updated successfully.",
+          variant: "success",
+        });
+        setOpen(false);
+        setSelectedItem(null);
+      } catch (e) {
+        console.error("Error updating document: ", e);
+
+        toast({
+          title: "Error!",
+          description: "There was an error updating the document.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="max-h-[75vh] overflow-y-auto custom-scrollbar">
+        <DialogHeader>
+          <DialogTitle>Edit Receiving Item</DialogTitle>
+          <DialogDescription>
+            Make changes to the receiving item details below.
+          </DialogDescription>
+        </DialogHeader>
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={methods.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Product Name" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
+              name="amount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Amount</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="1" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
+              name="serial"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Serial# (Count: {fields.length})</FormLabel>
+                  <div className="max-h-40 overflow-y-auto custom-scrollbar">
+                    <div className="p-4">
+                      {fields.map((field, index) => (
+                        <div key={field.id} className="flex items-center mb-2">
+                          <FormControl className="flex-1">
+                            <Input
+                              placeholder="12345"
+                              {...register(`serial.${index}`, {
+                                required: "Serial number is required",
+                                minLength: { value: 5, message: "Serial number must be at least 5 characters" }
+                              })}
+                            />
+                          </FormControl>
+                          <Button
+                            type="button"
+                            onClick={() => remove(index)}
+                            variant="destructive"
+                            size="sm"
+                            className="ml-2"
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={() => append("")}
+                      variant="secondary"
+                      size="sm"
+                      className="mt-2"
+                    >
+                      Add Serial Number
+                    </Button>
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
+              name="company"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Company</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Company Name" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
+              name="PO"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>PO</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Purchase Order" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
+              name="tracking"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tracking#</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Tracking Number" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
+              name="date"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Date</FormLabel>
+                  <FormControl>
+                    <Input type="date" placeholder="Date" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Address</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Address" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
+              name="notes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Notes</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Additional information" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <DialogFooter>
+              <Button type="submit">Save Changes</Button>
+            </DialogFooter>
+          </form>
+        </FormProvider>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default EditShippingForm;

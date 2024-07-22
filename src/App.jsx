@@ -11,6 +11,8 @@ const DisplayInventory = lazy(() => import('./components/displayInventory'));
 const AddIventoryForm = lazy(() => import('./components/addInventoryForm'));
 const DisplayShipping = lazy(() => import('./components/displayShipping'));
 const AddShippingForm = lazy(() => import('./components/addShippingForm'));
+const DisplayReceiving = lazy(() => import('./components/displayReceiving'));
+const AddReceivingForm = lazy(() => import('./components/addReceivingForm'));
 const DisplayItem = lazy(() => import('./components/displayItem')); 
 
 const App = () => {
@@ -26,8 +28,8 @@ const App = () => {
               <Route path="add" element={<AddIventoryForm />} />
               <Route path="shipping" element={<DisplayShipping />} />
               <Route path="addShipping" element={<AddShippingForm />} />
-              <Route path="receiving" element={<div>Receiving</div>} />
-              <Route path="addReceiving" element={<div>Add Receiving</div>} />
+              <Route path="receiving" element={<DisplayReceiving/>} />
+              <Route path="addReceiving" element={<AddReceivingForm/>} />
               <Route path="/item/:type/:id" element={<DisplayItem />} />
             </Route>
           </Routes>
