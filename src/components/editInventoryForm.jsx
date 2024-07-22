@@ -84,7 +84,7 @@ const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => 
           Location: data.location,
           Notes: data.notes || "",  // Ensure Notes has a default value
         });
-
+        form.reset();
         toast({
           title: "Success!",
           description: "Document updated successfully.",

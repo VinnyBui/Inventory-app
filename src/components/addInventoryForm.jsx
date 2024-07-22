@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -59,7 +58,7 @@ const AddInventoryForm = () => {
         Location: data.location,
       });
       console.log("Document added with ID: ", docRef.id);
-
+      form.reset();
       toast({
         title: "Success!",
         description: "Document added successfully.",

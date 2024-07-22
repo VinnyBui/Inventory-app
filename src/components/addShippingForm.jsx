@@ -78,7 +78,7 @@ const AddShippingForm = () => {
         Notes: data.notes || "", 
       });
       console.log("Document added with ID: ", docRef.id);
-
+      form.reset();
       toast({
         title: "Success!",
         description: "Document added successfully.",
