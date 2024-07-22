@@ -99,7 +99,7 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
           Notes: data.notes,
           Address: data.address,
         });
-        form.reset();
+        methods.reset();
         toast({
           title: "Success!",
           description: "Document updated successfully.",
