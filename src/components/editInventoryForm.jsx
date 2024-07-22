@@ -32,15 +32,9 @@ const FormSchema = z.object({
   amount: z.string().min(1, {
     message: "Amount must be at least 1 character.",
   }),
-  serial: z.array(
-    z.string().min(5, {
-      message: "Serial number must be at least 5 characters.",
-    })
-  ).min(1, { message: "Must have at least one serial number." }),
-  location: z.string().min(1, {
-    message: "Location must be at least 1 character.",
-  }),
   notes: z.string().optional(),
+  serial: z.array(z.string().optional()).optional(),
+  location: z.string().optional(),
 });
 
 const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
@@ -64,14 +58,15 @@ const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => 
   useEffect(() => {
     if (selectedItem) {
       reset({
-        name: selectedItem.Name,
-        amount: selectedItem.Amount,
-        serial: selectedItem.Serial,
-        location: selectedItem.Location,
+        name: selectedItem.Name || "",
+        amount: selectedItem.Amount || "",
+        serial: selectedItem.Serial || [""],
+        location: selectedItem.Location || "",
         notes: selectedItem.Notes || "",
       });
     }
   }, [selectedItem, reset]);
+  
 
   const onSubmit = async (data) => {
     if (selectedItem) {
