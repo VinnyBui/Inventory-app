@@ -59,7 +59,6 @@ const DisplayInventory = () => {
 
   const filteredItems = items.filter(item =>
     (item.Name?.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (item.Serial?.toLowerCase().includes(searchQuery.toLowerCase())) ||
     (item.Location?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
