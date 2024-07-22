@@ -161,7 +161,7 @@ const DisplayShipping = () => {
                     <TableCell>{formatDate(item.Date)}</TableCell>
                     <TableCell className="hidden sm:table-cell">{item.Name}</TableCell>
                     <TableCell className="hidden sm:table-cell">{item.Amount}</TableCell>
-                    <TableCell className="hidden md:table-cell">{item.Notes}</TableCell>
+                    <TableCell className="hidden md:table-cell">{item.Notes || 'N/A'}</TableCell>
                     <TableCell className="text-right flex justify-end">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>

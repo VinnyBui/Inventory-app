@@ -24,24 +24,18 @@ const FormSchema = z.object({
   amount: z.string().min(1, {
     message: "Amount must be at least 1 character.",
   }),
-  serial: z.array(
-    z.string().min(5, {
-      message: "Serial number must be at least 5 characters.",
-    })
-  ).min(1, { message: "Must have at least one serial number." }),
   company: z.string().min(1, {
     message: "Company name must be at least 1 character.",
   }),
   PO: z.string().min(1, {
     message: "PO must be at least 1 character.",
   }),
-  tracking: z.string().min(1, {
-    message: "Tracking number must be at least 1 character.",
-  }),
   date: z.string().min(1, {
     message: "Date must be at least 1 character.",
   }),
-  notes: z.string().optional(), // Make notes optional
+  serial: z.array(z.string().optional()).optional(), 
+  tracking: z.string().optional(),
+  notes: z.string().optional(),
 });
 
 const AddShippingForm = () => {
@@ -70,12 +64,12 @@ const AddShippingForm = () => {
       const docRef = await addDoc(itemsCollectionRef, {
         Name: data.name,
         Amount: data.amount,
-        Serial: data.serial,
+        Serial: data.serial.filter(Boolean), // Filter out empty serial numbers
         Company: data.company,
         PO: data.PO,
-        Tracking: data.tracking,
+        Tracking: data.tracking || "", // Set tracking to empty string if empty
         Date: data.date,
-        Notes: data.notes || "", 
+        Notes: data.notes || "", // Set notes to empty string if empty
       });
       console.log("Document added with ID: ", docRef.id);
       form.reset();
@@ -192,7 +186,7 @@ const AddShippingForm = () => {
               <FormItem>
                 <FormLabel>Tracking#</FormLabel>
                 <FormControl>
-                  <Input placeholder="IBuy" {...field} />
+                  <Input placeholder="Tracking Number" {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -210,10 +204,7 @@ const AddShippingForm = () => {
                         <FormControl className="flex-1">
                           <Input 
                             placeholder="12345"
-                            {...form.register(`serial.${index}`, {
-                              required: "Serial number is required",
-                              minLength: { value: 5, message: "Serial number must be at least 5 characters" }
-                            })}
+                            {...form.register(`serial.${index}`)}
                           />
                         </FormControl>
                         <Button
@@ -227,7 +218,7 @@ const AddShippingForm = () => {
                         </Button>
                       </div>
                     ))}
-                </div>
+                  </div>
                   <Button
                     type="button"
                     onClick={() => append("")}
