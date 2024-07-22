@@ -65,7 +65,7 @@ const DisplayInventory = () => {
 
   const handleDelete = async (id) => {
     try {
-      await deleteDoc(doc(db, "Items", id));
+      await deleteDoc(doc(db, "Inventory", id));
       setItems(items.filter((item) => item.id !== id));
       console.log(`Document with ID ${id} deleted`);
     } catch (err) {
