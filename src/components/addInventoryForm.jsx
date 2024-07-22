@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
+import { Textarea } from "@/components/ui/textarea";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -22,14 +23,9 @@ const FormSchema = z.object({
   amount: z.string().min(1, {
     message: "Amount must be at least 1 character.",
   }),
-  serial: z.array(
-    z.string().min(5, {
-      message: "Serial number must be at least 5 characters.",
-    })
-  ).min(1, { message: "Must have at least one serial number." }),
-  location: z.string().min(1, {
-    message: "Location must be at least 1 character.",
-  }),
+  serial: z.array(z.string().optional()).optional(), 
+  location: z.string().optional(),
+  notes: z.string().optional(),
 });
 
 const AddInventoryForm = () => {
@@ -40,6 +36,7 @@ const AddInventoryForm = () => {
       amount: "",
       serial: [""], 
       location: "",
+      notes: "",
     },
   });
 
@@ -54,8 +51,9 @@ const AddInventoryForm = () => {
       const docRef = await addDoc(itemsCollectionRef, {
         Name: data.name,
         Amount: data.amount,
-        Serial: data.serial,
-        Location: data.location,
+        Serial: data.serial.filter(Boolean), 
+        Location: data.location || null, 
+        Notes: data.notes || "", 
       });
       console.log("Document added with ID: ", docRef.id);
       form.reset();
@@ -142,10 +140,7 @@ const AddInventoryForm = () => {
                       <FormControl className="flex-1">
                         <Input 
                           placeholder="12345"
-                          {...form.register(`serial.${index}`, {
-                            required: "Serial number is required",
-                            minLength: { value: 5, message: "Serial number must be at least 5 characters" }
-                          })}
+                          {...form.register(`serial.${index}`)}
                         />
                       </FormControl>
                       <Button
@@ -180,6 +175,18 @@ const AddInventoryForm = () => {
                 <FormLabel>Location</FormLabel>
                 <FormControl>
                   <Input placeholder="G4" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="notes"
+            render={({ field }) => (
+              <FormItem className="col-span-1 md:col-span-3">
+                <FormLabel>Notes</FormLabel>
+                <FormControl>
+                  <Textarea placeholder="Additional information" {...field} />
                 </FormControl>
               </FormItem>
             )}
