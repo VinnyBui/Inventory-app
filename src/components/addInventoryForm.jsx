@@ -111,7 +111,7 @@ const AddInventoryForm = () => {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Cisco Router" {...field} />
+                  <Input {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -123,7 +123,7 @@ const AddInventoryForm = () => {
               <FormItem>
                 <FormLabel>Amount</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="1" {...field} />
+                  <Input type="number" {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -139,7 +139,6 @@ const AddInventoryForm = () => {
                     <div key={item.id} className="flex items-center mb-2">
                       <FormControl className="flex-1">
                         <Input 
-                          placeholder="12345"
                           {...form.register(`serial.${index}`)}
                         />
                       </FormControl>
@@ -174,7 +173,7 @@ const AddInventoryForm = () => {
               <FormItem>
                 <FormLabel>Location</FormLabel>
                 <FormControl>
-                  <Input placeholder="G4" {...field} />
+                  <Input {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -186,7 +185,7 @@ const AddInventoryForm = () => {
               <FormItem className="col-span-1 md:col-span-3">
                 <FormLabel>Notes</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="Additional information" {...field} />
+                  <Textarea {...field} />
                 </FormControl>
               </FormItem>
             )}

@@ -126,7 +126,7 @@ const AddShippingForm = () => {
               <FormItem>
                 <FormLabel>Company</FormLabel>
                 <FormControl>
-                  <Input placeholder="IBuy" {...field} />
+                  <Input {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -138,7 +138,7 @@ const AddShippingForm = () => {
               <FormItem>
                 <FormLabel>PO</FormLabel>
                 <FormControl>
-                  <Input placeholder="PO" {...field} />
+                  <Input {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -162,7 +162,7 @@ const AddShippingForm = () => {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Cisco Router" {...field} />
+                  <Input {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -174,7 +174,7 @@ const AddShippingForm = () => {
               <FormItem>
                 <FormLabel>Amount</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="1" {...field} />
+                  <Input type="number" {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -186,7 +186,7 @@ const AddShippingForm = () => {
               <FormItem>
                 <FormLabel>Tracking#</FormLabel>
                 <FormControl>
-                  <Input placeholder="Tracking Number" {...field} />
+                  <Input {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -203,7 +203,6 @@ const AddShippingForm = () => {
                       <div key={item.id} className="flex items-center mb-2">
                         <FormControl className="flex-1">
                           <Input 
-                            placeholder="12345"
                             {...form.register(`serial.${index}`)}
                           />
                         </FormControl>
@@ -239,7 +238,7 @@ const AddShippingForm = () => {
               <FormItem className="col-span-1 md:col-span-3">
                 <FormLabel>Notes</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="Additional information" {...field} />
+                  <Textarea {...field} />
                 </FormControl>
               </FormItem>
             )}

@@ -117,7 +117,7 @@ const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => 
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Product Name" {...field} />
+                    <Input {...field} />
                   </FormControl>
                 </FormItem>
               )}
@@ -129,7 +129,7 @@ const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => 
                 <FormItem>
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="1" {...field} />
+                    <Input type="number" {...field} />
                   </FormControl>
                 </FormItem>
               )}
@@ -146,7 +146,6 @@ const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => 
                         <div key={field.id} className="flex items-center mb-2">
                           <FormControl className="flex-1">
                             <Input
-                              placeholder="12345"
                               {...register(`serial.${index}`, {
                                 required: "Serial number is required",
                                 minLength: { value: 5, message: "Serial number must be at least 5 characters" }
@@ -185,7 +184,7 @@ const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => 
                 <FormItem>
                   <FormLabel>Location</FormLabel>
                   <FormControl>
-                    <Input placeholder="Location" {...field} />
+                    <Input {...field} />
                   </FormControl>
                 </FormItem>
               )}
@@ -197,7 +196,7 @@ const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => 
                 <FormItem>
                   <FormLabel>Notes</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Additional information" {...field} />
+                    <Textarea {...field} />
                   </FormControl>
                 </FormItem>
               )}
