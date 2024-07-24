@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useForm, FormProvider, useFieldArray  } from "react-hook-form";
+import React, { useEffect, useRef } from 'react';
+import { useForm, FormProvider, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -28,9 +28,12 @@ const FormSchema = z.object({
   name: z.string().min(2, {
     message: "Product name must be at least 2 characters.",
   }),
-  amount: z.string().min(1, {
-    message: "Amount must be at least 1 character.",
-  }),
+  amount: z.preprocess(
+    (val) => (typeof val === "string" ? parseInt(val, 10) : val),
+    z.number().min(1, {
+      message: "Amount must be at least 1.",
+    })
+  ),
   company: z.string().min(1, {
     message: "Company name must be at least 1 character.",
   }),
@@ -40,13 +43,19 @@ const FormSchema = z.object({
   date: z.string().min(1, {
     message: "Date must be at least 1 character.",
   }),
-  serial: z.array(z.string().optional()).optional(), 
-  tracking: z.string().optional(),
   notes: z.string().optional(),
+  serial: z.array(z.string().optional()).optional(),
+  tracking: z.string().optional(),
   address: z.string().optional(),
 });
 
-const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
+const handleKeyDown = (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+  }
+};
+
+const EditReceivingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
   const methods = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -62,7 +71,7 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
     },
   });
 
-  const { reset, handleSubmit, register, watch, control } = methods;
+  const { reset, handleSubmit, register, control } = methods;
   const { fields, append, remove } = useFieldArray({
     control: methods.control,
     name: "serial",
@@ -83,6 +92,38 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
       });
     }
   }, [selectedItem, reset]);
+
+  const serialFields = useWatch({
+    control: methods.control,
+    name: "serial",
+  });
+
+  const typingTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    if (serialFields && serialFields.length > 0) {
+      const lastSerialField = serialFields[serialFields.length - 1];
+      if (lastSerialField && lastSerialField.trim() !== "") {
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
+        }
+        typingTimeoutRef.current = setTimeout(() => {
+          append("");
+          setTimeout(() => {
+            const newInput = document.querySelector(`[name='serial.${serialFields.length}']`);
+            if (newInput) {
+              newInput.focus();
+            }
+          }, 0);
+        }, 500); // Adjust timeout as needed
+      }
+    }
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+    };
+  }, [serialFields, append]);
 
   const onSubmit = async (data) => {
     if (selectedItem) {
@@ -109,7 +150,6 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
         setSelectedItem(null);
       } catch (e) {
         console.error("Error updating document: ", e);
-
         toast({
           title: "Error!",
           description: "There was an error updating the document.",
@@ -129,7 +169,11 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
           </DialogDescription>
         </DialogHeader>
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form 
+            onSubmit={handleSubmit(onSubmit)} 
+            className="space-y-4"             
+            onKeyDown={handleKeyDown}
+          >
             <FormField
               control={methods.control}
               name="name"
@@ -279,4 +323,4 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
   );
 };
 
-export default EditShippingForm;
+export default EditReceivingForm;

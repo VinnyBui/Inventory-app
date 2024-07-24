@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useForm, FormProvider, useFieldArray } from "react-hook-form";
+import React, { useEffect, useRef } from 'react';
+import { useForm, FormProvider, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -29,13 +29,22 @@ const FormSchema = z.object({
   name: z.string().min(2, {
     message: "Product name must be at least 2 characters.",
   }),
-  amount: z.string().min(1, {
-    message: "Amount must be at least 1 character.",
-  }),
+  amount: z.preprocess(
+    (val) => (typeof val === "string" ? parseInt(val, 10) : val),
+    z.number().min(1, {
+      message: "Amount must be at least 1.",
+    })
+  ),
   notes: z.string().optional(),
   serial: z.array(z.string().optional()).optional(),
   location: z.string().optional(),
 });
+
+const handleKeyDown = (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+  }
+};
 
 const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
   const methods = useForm({
@@ -66,7 +75,38 @@ const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => 
       });
     }
   }, [selectedItem, reset]);
-  
+
+  const serialFields = useWatch({
+    control: methods.control,
+    name: "serial",
+  });
+
+  const typingTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    if (serialFields && serialFields.length > 0) {
+      const lastSerialField = serialFields[serialFields.length - 1];
+      if (lastSerialField && lastSerialField.trim() !== "") {
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
+        }
+        typingTimeoutRef.current = setTimeout(() => {
+          append("");
+          setTimeout(() => {
+            const newInput = document.querySelector(`[name='serial.${serialFields.length}']`);
+            if (newInput) {
+              newInput.focus();
+            }
+          }, 0);
+        }, 500); // Adjust timeout as needed
+      }
+    }
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+    };
+  }, [serialFields, append]);
 
   const onSubmit = async (data) => {
     if (selectedItem) {
@@ -89,7 +129,6 @@ const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => 
         setSelectedItem(null);
       } catch (e) {
         console.error("Error updating document: ", e);
-
         toast({
           title: "Error!",
           description: "There was an error updating the document.",
@@ -109,7 +148,11 @@ const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => 
           </DialogDescription>
         </DialogHeader>
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form 
+            onSubmit={handleSubmit(onSubmit)} 
+            className="space-y-4"
+            onKeyDown={handleKeyDown}
+          >
             <FormField
               control={methods.control}
               name="name"
