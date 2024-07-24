@@ -41,21 +41,21 @@ const DisplayShipping = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [sortConfig, setSortConfig] = useState({ key: 'Date', direction: 'ascending' });
 
-  useEffect(() => {
-    const getItems = async () => {
-      try {
-        const data = await getDocs(itemsCollectionRef);
-        const filteredData = data.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        setItems(filteredData);
-      } catch (err) {
-        console.error("Error getting data:", err);
-      }
-    };
+  const fetchItems = async () => {
+    try {
+      const data = await getDocs(itemsCollectionRef);
+      const filteredData = data.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setItems(filteredData);
+    } catch (err) {
+      console.error("Error getting data:", err);
+    }
+  };
 
-    getItems();
+  useEffect(() => {
+    fetchItems();
   }, []);
 
   const filteredItems = items.filter(item =>
@@ -96,7 +96,6 @@ const DisplayShipping = () => {
     const options = { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' };
     return date.toLocaleDateString('en-US', options); // 'en-US' format (MM/DD/YYYY)
   };
-  
 
   const handleDelete = async (id) => {
     try {
@@ -122,6 +121,7 @@ const DisplayShipping = () => {
 
   const totalPages = Math.ceil(items.length / itemsPerPage);
   const totalAmount = filteredItems.reduce((acc, item) => acc + (item.Amount || 0), 0);
+
   return (
     <div>
       <Card>
@@ -252,6 +252,7 @@ const DisplayShipping = () => {
           setOpen={setOpen}
           selectedItem={selectedItem}
           setSelectedItem={setSelectedItem}
+          refreshItems={fetchItems} // Pass refresh function here
         />
       )}
     </div>

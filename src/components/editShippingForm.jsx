@@ -54,7 +54,7 @@ const handleKeyDown = (e) => {
   }
 };
 
-const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
+const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem, refreshItems }) => {
   const methods = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -144,6 +144,7 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
         });
         setOpen(false);
         setSelectedItem(null);
+        refreshItems(); // Call the refreshItems function to update the list
       } catch (e) {
         console.error("Error updating document: ", e);
         toast({
