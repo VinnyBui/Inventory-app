@@ -28,6 +28,12 @@ const FormSchema = z.object({
   notes: z.string().optional(),
 });
 
+const handleKeyDown = (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+  }
+};
+
 const AddInventoryForm = () => {
   const form = useForm({
     resolver: zodResolver(FormSchema),
@@ -103,7 +109,11 @@ const AddInventoryForm = () => {
   return (
     <div className="flex items-center justify-center">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-md space-y-6 p-8 rounded shadow-md">
+        <form 
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full max-w-md space-y-6 p-8 rounded shadow-md"
+          onKeyDown={handleKeyDown}
+        >
           <FormField
             control={form.control}
             name="name"
@@ -190,7 +200,7 @@ const AddInventoryForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit" >Submit</Button>
         </form>
       </Form>
     </div>
