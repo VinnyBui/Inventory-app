@@ -55,7 +55,7 @@ const handleKeyDown = (e) => {
   }
 };
 
-const EditReceivingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
+const EditReceivingForm = ({ open, setOpen, selectedItem, setSelectedItem, refreshItems }) => {
   const methods = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -148,6 +148,7 @@ const EditReceivingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => 
         });
         setOpen(false);
         setSelectedItem(null);
+        refreshItems(); // Call the refreshItems function to update the list
       } catch (e) {
         console.error("Error updating document: ", e);
         toast({
@@ -170,10 +171,10 @@ const EditReceivingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => 
         </DialogHeader>
         <FormProvider {...methods}>
           <form 
-            onSubmit={handleSubmit(onSubmit)} 
-            className="space-y-4"             
-            onKeyDown={handleKeyDown}
-          >
+              onSubmit={handleSubmit(onSubmit)} 
+              className="space-y-4"
+              onKeyDown={handleKeyDown}
+            >
             <FormField
               control={methods.control}
               name="name"

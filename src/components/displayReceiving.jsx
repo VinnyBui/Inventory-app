@@ -41,21 +41,21 @@ const DisplayReceiving = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [sortConfig, setSortConfig] = useState({ key: 'Date', direction: 'ascending' });
 
-  useEffect(() => {
-    const getItems = async () => {
-      try {
-        const data = await getDocs(itemsCollectionRef);
-        const filteredData = data.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        setItems(filteredData);
-      } catch (err) {
-        console.error("Error getting data:", err);
-      }
-    };
+  const fetchItems = async () => {
+    try {
+      const data = await getDocs(itemsCollectionRef);
+      const filteredData = data.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setItems(filteredData);
+    } catch (err) {
+      console.error("Error getting data:", err);
+    }
+  };
 
-    getItems();
+  useEffect(() => {
+    fetchItems();
   }, []);
 
   const filteredItems = items.filter(item =>
@@ -279,6 +279,7 @@ const DisplayReceiving = () => {
           setOpen={setOpen}
           selectedItem={selectedItem}
           setSelectedItem={setSelectedItem}
+          refreshItems={fetchItems} 
         />
       )}
     </div>
