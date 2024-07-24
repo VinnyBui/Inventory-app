@@ -122,13 +122,13 @@ const DisplayReceiving = () => {
   };
 
   const totalPages = Math.ceil(items.length / itemsPerPage);
-
+  const totalAmount = filteredItems.reduce((acc, item) => acc + (item.Amount || 0), 0);
   return (
     <div>
       <Card>
         <CardHeader>
           <CardTitle>Receiving</CardTitle>
-          <CardDescription>Amount of items: {filteredItems.length}</CardDescription>
+          <CardDescription>Amount of items: {totalAmount}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">

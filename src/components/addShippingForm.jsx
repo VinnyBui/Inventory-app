@@ -63,7 +63,7 @@ const AddShippingForm = () => {
       const itemsCollectionRef = collection(db, 'Shipping');
       const docRef = await addDoc(itemsCollectionRef, {
         Name: data.name,
-        Amount: data.amount,
+        Amount: Number(data.amount),
         Serial: data.serial.filter(Boolean), // Filter out empty serial numbers
         Company: data.company,
         PO: data.PO,

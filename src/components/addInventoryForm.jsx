@@ -50,7 +50,7 @@ const AddInventoryForm = () => {
       const itemsCollectionRef = collection(db, 'Inventory');
       const docRef = await addDoc(itemsCollectionRef, {
         Name: data.name,
-        Amount: data.amount,
+        Amount: Number(data.amount),
         Serial: data.serial.filter(Boolean), 
         Location: data.location || null, 
         Notes: data.notes || "", 

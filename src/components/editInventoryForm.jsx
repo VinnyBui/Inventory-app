@@ -74,7 +74,7 @@ const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => 
         const itemDocRef = doc(db, 'Inventory', selectedItem.id);
         await updateDoc(itemDocRef, {
           Name: data.name,
-          Amount: data.amount,
+          Amount: Number(data.amount),
           Serial: data.serial,
           Location: data.location,
           Notes: data.notes || "",  // Ensure Notes has a default value

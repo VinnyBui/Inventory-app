@@ -90,7 +90,7 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
         const itemDocRef = doc(db, 'Receiving', selectedItem.id);
         await updateDoc(itemDocRef, {
           Name: data.name,
-          Amount: data.amount,
+          Amount: Number(data.amount),
           Serial: data.serial,
           Company: data.company,
           PO: data.PO,
