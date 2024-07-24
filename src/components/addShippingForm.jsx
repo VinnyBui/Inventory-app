@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { db } from "../config/firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -53,10 +53,48 @@ const AddShippingForm = () => {
     },
   });
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+    }
+  };
+
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "serial",
   });
+
+  const serialFields = useWatch({
+    control: form.control,
+    name: "serial",
+  });
+
+  const typingTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    if (serialFields && serialFields.length > 0) {
+      const lastSerialField = serialFields[serialFields.length - 1];
+      if (lastSerialField && lastSerialField.trim() !== "") {
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
+        }
+        typingTimeoutRef.current = setTimeout(() => {
+          append("");
+          setTimeout(() => {
+            const newInput = document.querySelector(`[name='serial.${serialFields.length}']`);
+            if (newInput) {
+              newInput.focus();
+            }
+          }, 0);
+        }, 500); // Adjust timeout as needed
+      }
+    }
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+    };
+  }, [serialFields, append]);
 
   const onSubmit = async (data) => {
     try {
@@ -118,7 +156,11 @@ const AddShippingForm = () => {
   return (
     <div className="flex items-center justify-center">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-3 gap-4 p-8 rounded shadow-md">
+        <form 
+            onSubmit={form.handleSubmit(onSubmit)} 
+            className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-3 gap-4 p-8 rounded shadow-md"
+            onKeyDown={handleKeyDown}
+          >
           <FormField
             control={form.control}
             name="company"
