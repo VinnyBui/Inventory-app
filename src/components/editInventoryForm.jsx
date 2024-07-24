@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
 import { db } from "../config/firebase";
 import { doc, updateDoc } from "firebase/firestore";
@@ -46,7 +45,7 @@ const handleKeyDown = (e) => {
   }
 };
 
-const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => {
+const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem, refreshItems }) => {
   const methods = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -127,6 +126,7 @@ const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem }) => 
         });
         setOpen(false);
         setSelectedItem(null);
+        refreshItems(); // Call the refreshItems function to update the list
       } catch (e) {
         console.error("Error updating document: ", e);
         toast({

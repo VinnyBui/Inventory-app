@@ -40,21 +40,21 @@ const DisplayInventory = () => {
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  useEffect(() => {
-    const getItems = async () => {
-      try {
-        const data = await getDocs(itemsCollectionRef);
-        const filteredData = data.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        setItems(filteredData);
-      } catch (err) {
-        console.error("Error getting data:", err);
-      }
-    };
+  const fetchItems = async () => {
+    try {
+      const data = await getDocs(itemsCollectionRef);
+      const filteredData = data.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setItems(filteredData);
+    } catch (err) {
+      console.error("Error getting data:", err);
+    }
+  };
 
-    getItems();
+  useEffect(() => {
+    fetchItems();
   }, []);
 
   const filteredItems = items.filter(item =>
@@ -82,10 +82,6 @@ const DisplayInventory = () => {
     e.stopPropagation(); 
     setSelectedItem(item);
     setOpen(true);
-  };
-
-  const handelAmount = (items) => {
-    
   };
 
   const totalPages = Math.ceil(items.length / itemsPerPage);
@@ -183,6 +179,7 @@ const DisplayInventory = () => {
           setOpen={setOpen}
           selectedItem={selectedItem}
           setSelectedItem={setSelectedItem}
+          refreshItems={fetchItems} // Pass refresh function here
         />
       )}
     </div>
