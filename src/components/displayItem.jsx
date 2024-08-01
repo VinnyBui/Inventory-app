@@ -47,7 +47,7 @@ const DisplayItem = () => {
     <Card>
       <CardHeader>
         <CardTitle>Item Details</CardTitle>
-        <CardDescription>{item?.Name}</CardDescription>
+
       </CardHeader>
       <CardContent>
         {type === 'inventory' && (
@@ -71,11 +71,13 @@ const DisplayItem = () => {
         )}
         {type === 'shipping' && (
           <>
+            <div>Part #: {item?.Name} </div>
+            <div>Amount: {item?.Amount}</div>
             <div>Company: {item?.Company}</div>
             <div>PO: {item?.PO}</div>
             <div>Date: {item?.Date}</div>
             <div>
-              Serial#: 
+              Serial #: 
               {Array.isArray(item?.Serial) ? (
                 <ul>
                   {item.Serial.map((serial, index) => (
@@ -86,17 +88,19 @@ const DisplayItem = () => {
                 <span>{item?.Serial}</span>
               )}
             </div>
-            <div>Tracking#: {item?.Tracking}</div>
+            <div>Tracking #: {item?.Tracking}</div>
             <div>Notes: {item?.Notes}</div>
           </>
         )}
         {type === 'receiving' && (
           <>
+            <div>Part #: {item?.Name} </div>
+            <div>Amount: {item?.Amount}</div>
             <div>Company: {item?.Company}</div>
             <div>PO: {item?.PO}</div>
             <div>Date: {item?.Date}</div>
             <div>
-              Serial#: 
+              Serial #: 
               {Array.isArray(item?.Serial) ? (
                 <ul>
                   {item.Serial.map((serial, index) => (
@@ -107,7 +111,7 @@ const DisplayItem = () => {
                 <span>{item?.Serial}</span>
               )}
             </div>
-            <div>Tracking#: {item?.Tracking}</div>
+            <div>Tracking #: {item?.Tracking}</div>
             <div>Address: {item?.Address}</div>
             <div>Notes: {item?.Notes}</div>
           </>
