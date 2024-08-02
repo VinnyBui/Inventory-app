@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { db } from "../config/firebase";
+import { db } from "../../config/firebase";
 import { getDocs, collection, doc, deleteDoc } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
@@ -28,7 +28,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import PaginationComponent from './pagination';
+import PaginationComponent from '../pagination';
 import EditInventoryForm from './editInventoryForm'; 
 
 const DisplayInventory = () => {

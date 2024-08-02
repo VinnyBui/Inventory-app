@@ -21,7 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
-import { db } from "../config/firebase";
+import { db } from "../../config/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 
 const FormSchema = z.object({

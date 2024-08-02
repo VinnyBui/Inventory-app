@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { db } from "../config/firebase";
+import { db } from "../../config/firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";

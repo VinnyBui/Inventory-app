@@ -21,7 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
-import { db } from "../config/firebase";
+import { db } from "../../config/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 
 const FormSchema = z.object({
@@ -34,19 +34,9 @@ const FormSchema = z.object({
       message: "Amount must be at least 1.",
     })
   ),
-  company: z.string().min(1, {
-    message: "Company name must be at least 1 character.",
-  }),
-  PO: z.string().min(1, {
-    message: "PO must be at least 1 character.",
-  }),
-  date: z.string().min(1, {
-    message: "Date must be at least 1 character.",
-  }),
   notes: z.string().optional(),
   serial: z.array(z.string().optional()).optional(),
-  tracking: z.string().optional(),
-  address: z.string().optional(),
+  location: z.string().optional(),
 });
 
 const handleKeyDown = (e) => {
@@ -55,40 +45,32 @@ const handleKeyDown = (e) => {
   }
 };
 
-const EditReceivingForm = ({ open, setOpen, selectedItem, setSelectedItem, refreshItems }) => {
+const EditInventoryForm = ({ open, setOpen, selectedItem, setSelectedItem, refreshItems }) => {
   const methods = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       name: "",
       amount: "",
       serial: [""],
-      company: "",
-      PO: "",
-      tracking: "",
-      date: "",
+      location: "",
       notes: "",
-      address: "",
     },
   });
 
   const { reset, handleSubmit, register, control } = methods;
   const { fields, append, remove } = useFieldArray({
-    control: methods.control,
+    control,
     name: "serial",
   });
 
   useEffect(() => {
     if (selectedItem) {
       reset({
-        name: selectedItem.Name,
-        amount: selectedItem.Amount,
-        serial: selectedItem.Serial,
-        company: selectedItem.Company,
-        PO: selectedItem.PO,
-        tracking: selectedItem.Tracking,
-        date: selectedItem.Date,
-        notes: selectedItem.Notes,
-        address: selectedItem.Address,
+        name: selectedItem.Name || "",
+        amount: selectedItem.Amount || "",
+        serial: selectedItem.Serial || [""],
+        location: selectedItem.Location || "",
+        notes: selectedItem.Notes || "",
       });
     }
   }, [selectedItem, reset]);
@@ -128,17 +110,13 @@ const EditReceivingForm = ({ open, setOpen, selectedItem, setSelectedItem, refre
   const onSubmit = async (data) => {
     if (selectedItem) {
       try {
-        const itemDocRef = doc(db, 'Receiving', selectedItem.id);
+        const itemDocRef = doc(db, 'Inventory', selectedItem.id);
         await updateDoc(itemDocRef, {
           Name: data.name,
           Amount: Number(data.amount),
           Serial: data.serial,
-          Company: data.company,
-          PO: data.PO,
-          Tracking: data.tracking,
-          Date: data.date,
-          Notes: data.notes,
-          Address: data.address,
+          Location: data.location,
+          Notes: data.notes || "",  // Ensure Notes has a default value
         });
         methods.reset();
         toast({
@@ -164,17 +142,17 @@ const EditReceivingForm = ({ open, setOpen, selectedItem, setSelectedItem, refre
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-h-[75vh] overflow-y-auto custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Edit Receiving Item</DialogTitle>
+          <DialogTitle>Edit Inventory Item</DialogTitle>
           <DialogDescription>
-            Make changes to the receiving item details below.
+            Make changes to the inventory item details below.
           </DialogDescription>
         </DialogHeader>
         <FormProvider {...methods}>
           <form 
-              onSubmit={handleSubmit(onSubmit)} 
-              className="space-y-4"
-              onKeyDown={handleKeyDown}
-            >
+            onSubmit={handleSubmit(onSubmit)} 
+            className="space-y-4"
+            onKeyDown={handleKeyDown}
+          >
             <FormField
               control={methods.control}
               name="name"
@@ -244,58 +222,10 @@ const EditReceivingForm = ({ open, setOpen, selectedItem, setSelectedItem, refre
             />
             <FormField
               control={methods.control}
-              name="company"
+              name="location"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Company</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={methods.control}
-              name="PO"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>PO</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={methods.control}
-              name="tracking"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tracking#</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={methods.control}
-              name="date"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Date</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={methods.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Address</FormLabel>
+                  <FormLabel>Location</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -324,4 +254,4 @@ const EditReceivingForm = ({ open, setOpen, selectedItem, setSelectedItem, refre
   );
 };
 
-export default EditReceivingForm;
+export default EditInventoryForm;
