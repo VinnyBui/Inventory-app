@@ -152,7 +152,7 @@ const AddInventoryForm = () => {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>Part #</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>

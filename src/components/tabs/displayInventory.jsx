@@ -98,7 +98,7 @@ const DisplayInventory = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
+                <TableHead>Part #</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Location</TableHead>
                 <TableHead>Notes</TableHead>
