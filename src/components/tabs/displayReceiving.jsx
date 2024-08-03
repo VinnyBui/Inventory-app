@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { db } from "../../config/firebase";
-import { getDocs, collection, doc, deleteDoc } from "firebase/firestore";
+import { getDocs, collection, query, orderBy, doc, deleteDoc } from "firebase/firestore"; // Import query and orderBy
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
@@ -34,7 +34,6 @@ import EditReceivingForm from './editReceivingForm';
 const DisplayReceiving = () => {
   const { searchQuery, handleItemClick } = useOutletContext();
   const [items, setItems] = useState([]);
-  const itemsCollectionRef = collection(db, "Receiving");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [open, setOpen] = useState(false);
@@ -43,7 +42,9 @@ const DisplayReceiving = () => {
 
   const fetchItems = async () => {
     try {
-      const data = await getDocs(itemsCollectionRef);
+      // Create a query that orders the items by "Date" in descending order
+      const itemsQuery = query(collection(db, "Receiving"), orderBy("createdAt", "desc"));
+      const data = await getDocs(itemsQuery);
       const filteredData = data.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
@@ -110,7 +111,7 @@ const DisplayReceiving = () => {
   };
 
   const handlePageChange = (page) => {
-    if (page >= 1 && page <= Math.ceil(items.length / itemsPerPage)) {
+    if (page >= 1 && page <= Math.ceil(filteredItems.length / itemsPerPage)) {
       setCurrentPage(page);
     }
   };
@@ -121,8 +122,9 @@ const DisplayReceiving = () => {
     setOpen(true);
   };
 
-  const totalPages = Math.ceil(items.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const totalAmount = filteredItems.reduce((acc, item) => acc + (item.Amount || 0), 0);
+
   return (
     <div>
       <Card>

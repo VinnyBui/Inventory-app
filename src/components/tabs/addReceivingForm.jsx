@@ -126,6 +126,7 @@ const AddReceivingForm = () => {
         Carrier: data.carrier,
         Shipping: shipping,
         BlindShip: data.blindShip,
+        createdAt: serverTimestamp(), 
       });
       console.log("Document added with ID: ", docRef.id);
       form.reset();
