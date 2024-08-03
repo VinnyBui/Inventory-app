@@ -29,7 +29,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import PaginationComponent from '../pagination';
-import EditInventoryForm from './editInventoryForm'; 
+import EditInventoryForm from './editInventoryForm';
 
 const DisplayInventory = () => {
   const { searchQuery, handleItemClick } = useOutletContext();
@@ -58,11 +58,13 @@ const DisplayInventory = () => {
     fetchItems();
   }, []);
 
+  // Filter items based on search query
   const filteredItems = items.filter(item =>
     (item.Name?.toLowerCase().includes(searchQuery.toLowerCase())) ||
     (item.Location?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
+  // Sort items based on sort configuration
   const sortedItems = React.useMemo(() => {
     let sortableItems = [...filteredItems];
     if (sortConfig !== null) {
@@ -98,18 +100,20 @@ const DisplayInventory = () => {
   };
 
   const handlePageChange = (page) => {
-    if (page >= 1 && page <= Math.ceil(items.length / itemsPerPage)) {
+    // Ensure page number is within valid bounds
+    if (page >= 1 && page <= Math.ceil(filteredItems.length / itemsPerPage)) {
       setCurrentPage(page);
     }
   };
 
   const handleEdit = (e, item) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
     setSelectedItem(item);
     setOpen(true);
   };
 
-  const totalPages = Math.ceil(items.length / itemsPerPage);
+  // Calculate total pages based on filtered items
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const totalAmount = filteredItems.reduce((acc, item) => acc + (item.Amount || 0), 0);
 
   return (
@@ -147,7 +151,7 @@ const DisplayInventory = () => {
                   <TableCell className="">{item.Location || 'N/A'}</TableCell>
                   <TableCell className="">{item.Notes || 'N/A'}</TableCell>
                   <TableCell className="text-right">
-                  <DropdownMenu>
+                    <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0" onClick={(e) => e.stopPropagation()}>
                           <span className="sr-only">Open menu</span>
@@ -204,7 +208,7 @@ const DisplayInventory = () => {
       <PaginationComponent
         currentPage={currentPage}
         totalPages={totalPages}
-        handlePageChange={handlePageChange}
+        onPageChange={handlePageChange}
       />
       {selectedItem && (
         <EditInventoryForm

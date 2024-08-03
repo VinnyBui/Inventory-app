@@ -271,7 +271,7 @@ const DisplayReceiving = () => {
       <PaginationComponent
         currentPage={currentPage}
         totalPages={totalPages}
-        handlePageChange={handlePageChange}
+        onPageChange={handlePageChange}
       />
       {selectedItem && (
         <EditReceivingForm

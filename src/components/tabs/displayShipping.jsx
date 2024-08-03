@@ -244,7 +244,7 @@ const DisplayShipping = () => {
       <PaginationComponent
         currentPage={currentPage}
         totalPages={totalPages}
-        handlePageChange={handlePageChange}
+        onPageChange={handlePageChange}
       />
       {selectedItem && (
         <EditShippingForm
