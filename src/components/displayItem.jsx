@@ -52,6 +52,8 @@ const DisplayItem = () => {
       <CardContent>
         {type === 'inventory' && (
           <>
+          <div>Part #: {item?.Name}</div>
+          <div>Amount: {item?.Amount}</div>
             <div>Location: {item?.Location}</div>
             <div>
               Serial#: 
@@ -65,7 +67,6 @@ const DisplayItem = () => {
                 <span>{item?.Serial}</span>
               )}
             </div>
-            <div>Amount: {item?.Amount}</div>
             <div>Notes: {item?.Notes}</div>
           </>
         )}
