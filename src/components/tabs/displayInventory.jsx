@@ -3,7 +3,7 @@ import { useOutletContext } from 'react-router-dom';
 import { db } from "../../config/firebase";
 import { getDocs, collection, doc, deleteDoc } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import {
   Card,
@@ -39,6 +39,7 @@ const DisplayInventory = () => {
   const itemsPerPage = 10;
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [sortConfig, setSortConfig] = useState({ key: 'Name', direction: 'ascending' });
 
   const fetchItems = async () => {
     try {
@@ -61,6 +62,30 @@ const DisplayInventory = () => {
     (item.Name?.toLowerCase().includes(searchQuery.toLowerCase())) ||
     (item.Location?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
+
+  const sortedItems = React.useMemo(() => {
+    let sortableItems = [...filteredItems];
+    if (sortConfig !== null) {
+      sortableItems.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [filteredItems, sortConfig]);
+
+  const requestSort = key => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
 
   const handleDelete = async (id) => {
     try {
@@ -98,14 +123,22 @@ const DisplayInventory = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Part #</TableHead>
+                <TableHead>
+                  <Button
+                    variant="ghost"
+                    onClick={() => requestSort('Name')}
+                  >
+                    Part #
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Location</TableHead>
                 <TableHead>Notes</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item) => (
+              {sortedItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item) => (
                 <TableRow key={item.id} onClick={() => handleItemClick(item.id, 'inventory')}>
                   <TableCell>
                     <div className="font-medium">{item.Name || 'N/A'}</div>
