@@ -23,7 +23,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { db } from "../../config/firebase";
 import { doc, updateDoc } from "firebase/firestore";
+import { Switch } from "@/components/ui/switch";
 
+// Define the schema for form validation
 const FormSchema = z.object({
   name: z.string().min(2, {
     message: "Product name must be at least 2 characters.",
@@ -46,8 +48,17 @@ const FormSchema = z.object({
   notes: z.string().optional(),
   serial: z.array(z.string().optional()).optional(),
   tracking: z.string().optional(),
+  carrier: z.string().optional(),
+  shipping: z.preprocess(
+    (val) => (typeof val === "string" ? parseFloat(val) : val),
+    z.number().min(0, {
+      message: "Shipping must be a valid number.",
+    })
+  ),
+  blindShip: z.boolean().optional(),
 });
 
+// Prevent form submission with Enter key
 const handleKeyDown = (e) => {
   if (e.key === 'Enter') {
     e.preventDefault();
@@ -55,6 +66,7 @@ const handleKeyDown = (e) => {
 };
 
 const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem, refreshItems }) => {
+  // Initialize form methods
   const methods = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -66,6 +78,9 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem, refres
       tracking: "",
       date: "",
       notes: "",
+      carrier: "",
+      shipping: "",
+      blindShip: false,
     },
   });
 
@@ -75,21 +90,26 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem, refres
     name: "serial",
   });
 
+  // Reset form with selected item data
   useEffect(() => {
     if (selectedItem) {
       reset({
         name: selectedItem.Name,
         amount: selectedItem.Amount,
-        serial: selectedItem.Serial,
+        serial: selectedItem.Serial || [""],
         company: selectedItem.Company,
         PO: selectedItem.PO,
         tracking: selectedItem.Tracking,
         date: selectedItem.Date,
         notes: selectedItem.Notes,
+        carrier: selectedItem.Carrier,
+        shipping: selectedItem.Shipping.toString(),
+        blindShip: selectedItem.BlindShip,
       });
     }
   }, [selectedItem, reset]);
 
+  // Watch for serial field changes
   const serialFields = useWatch({
     control: methods.control,
     name: "serial",
@@ -97,6 +117,7 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem, refres
 
   const typingTimeoutRef = useRef(null);
 
+  // Auto-append empty serial input on typing
   useEffect(() => {
     if (serialFields && serialFields.length > 0) {
       const lastSerialField = serialFields[serialFields.length - 1];
@@ -122,6 +143,7 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem, refres
     };
   }, [serialFields, append]);
 
+  // Handle form submission
   const onSubmit = async (data) => {
     if (selectedItem) {
       try {
@@ -129,12 +151,15 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem, refres
         await updateDoc(itemDocRef, {
           Name: data.name,
           Amount: Number(data.amount),
-          Serial: data.serial,
+          Serial: data.serial.filter(Boolean), // Remove empty serials
           Company: data.company,
           PO: data.PO,
           Tracking: data.tracking,
           Date: data.date,
           Notes: data.notes,
+          Carrier: data.carrier,
+          Shipping: Number(data.shipping),
+          BlindShip: data.blindShip,
         });
         methods.reset();
         toast({
@@ -144,7 +169,7 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem, refres
         });
         setOpen(false);
         setSelectedItem(null);
-        refreshItems(); // Call the refreshItems function to update the list
+        refreshItems(); // Refresh items list after update
       } catch (e) {
         console.error("Error updating document: ", e);
         toast({
@@ -276,12 +301,60 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem, refres
             />
             <FormField
               control={methods.control}
+              name="carrier"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Carrier#</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
               name="date"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Date</FormLabel>
                   <FormControl>
                     <Input type="date" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
+              name="shipping"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Shipping Cost</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                        $
+                      </span>
+                      <Input
+                        {...field}
+                        type="number"
+                        className="pl-8"
+                        step="0.01"
+                      />
+                    </div>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
+              name="blindShip"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Blind Shipping</FormLabel>
+                  <FormControl>
+                    <div className="relative py-2">
+                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                    </div>
                   </FormControl>
                 </FormItem>
               )}

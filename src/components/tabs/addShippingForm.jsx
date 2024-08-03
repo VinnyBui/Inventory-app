@@ -16,13 +16,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Switch } from "@/components/ui/switch"
 
 const FormSchema = z.object({
   name: z.string().min(2, {
     message: "Product name must be at least 2 characters.",
   }),
-  amount: z.string().min(1, {
-    message: "Amount must be at least 1 character.",
+  amount: z.string().refine((val) => !isNaN(parseFloat(val)), {
+    message: "Amount must be a valid number.",
   }),
   company: z.string().min(1, {
     message: "Company name must be at least 1 character.",
@@ -36,6 +37,11 @@ const FormSchema = z.object({
   serial: z.array(z.string().optional()).optional(), 
   tracking: z.string().optional(),
   notes: z.string().optional(),
+  carrier: z.string().optional(),
+  shipping: z.string().refine((val) => !isNaN(parseFloat(val)), {
+    message: "Shipping must be a valid number.",
+  }),
+  blindShip: z.boolean().optional(), 
 });
 
 const AddShippingForm = () => {
@@ -43,13 +49,16 @@ const AddShippingForm = () => {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       name: "",
-      amount: "",
+      amount: 0,
       serial: [""], // Initialize with one empty serial number input
       company: "",
       PO: "",
       tracking: "",
       date: "",
-      notes: "", // Ensure notes is initialized as an empty string
+      notes: "", 
+      carrier: "",
+      shipping: 0,
+      blindShip: false,
     },
   });
 
@@ -98,16 +107,22 @@ const AddShippingForm = () => {
 
   const onSubmit = async (data) => {
     try {
+      const amount = parseFloat(data.amount);
+      const shipping = parseFloat(data.shipping);
+
       const itemsCollectionRef = collection(db, 'Shipping');
       const docRef = await addDoc(itemsCollectionRef, {
         Name: data.name,
-        Amount: Number(data.amount),
+        Amount: amount,
         Serial: data.serial.filter(Boolean), // Filter out empty serial numbers
         Company: data.company,
         PO: data.PO,
-        Tracking: data.tracking || "", // Set tracking to empty string if empty
+        Tracking: data.tracking || "",
         Date: data.date,
-        Notes: data.notes || "", // Set notes to empty string if empty
+        Notes: data.notes || "",
+        Carrier: data.carrier,
+        Shipping: shipping,
+        BlindShip: data.blindShip,
       });
       console.log("Document added with ID: ", docRef.id);
       form.reset();
@@ -229,6 +244,54 @@ const AddShippingForm = () => {
                 <FormLabel>Tracking#</FormLabel>
                 <FormControl>
                   <Input {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="carrier"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Carrier#</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="shipping"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Shipping Cost</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                      $
+                    </span>
+                    <Input
+                      {...field}
+                      type="number"
+                      className="pl-8"
+                      step="0.01"
+                    />
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="blindShip"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Blind Shipping</FormLabel>
+                <FormControl>
+                  <div className="relative py-2">
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  </div>
                 </FormControl>
               </FormItem>
             )}
