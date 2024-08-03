@@ -47,8 +47,8 @@ const DisplayItem = () => {
   return (
     <div className="flex items-center justify-center p-4">
       <Card className="border shadow-lg max-w-xl w-full rounded-lg">
-        <CardHeader className="bg-gray-100 rounded-t-lg p-4">
-          <CardTitle className="text-2xl font-bold text-center">Item Details</CardTitle>
+        <CardHeader className="bg-slate-200 rounded-t-lg p-4">
+          <CardTitle className="text-2xl font-bold text-center text-black">Item Details</CardTitle>
         </CardHeader>
         <CardContent className="p-5">
           <div className="space-y-3">
