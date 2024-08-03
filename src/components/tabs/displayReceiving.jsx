@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { db } from "../../config/firebase";
-import { getDocs, collection, query, orderBy, doc, deleteDoc } from "firebase/firestore"; // Import query and orderBy
+import { getDocs, collection, query, orderBy, doc, deleteDoc } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import {
   Card,
@@ -38,11 +38,10 @@ const DisplayReceiving = () => {
   const itemsPerPage = 10;
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [sortConfig, setSortConfig] = useState({ key: 'Date', direction: 'ascending' });
 
   const fetchItems = async () => {
     try {
-      // Create a query that orders the items by "Date" in descending order
+      // Query to order items by "createdAt" in descending order
       const itemsQuery = query(collection(db, "Receiving"), orderBy("createdAt", "desc"));
       const data = await getDocs(itemsQuery);
       const filteredData = data.docs.map((doc) => ({
@@ -67,39 +66,6 @@ const DisplayReceiving = () => {
     (item.Address?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
-  const sortedItems = React.useMemo(() => {
-    let sortableItems = [...filteredItems];
-    if (sortConfig !== null) {
-      sortableItems.sort((a, b) => {
-        const dateA = new Date(a[sortConfig.key]);
-        const dateB = new Date(b[sortConfig.key]);
-        if (dateA < dateB) {
-          return sortConfig.direction === 'ascending' ? -1 : 1;
-        }
-        if (dateA > dateB) {
-          return sortConfig.direction === 'ascending' ? 1 : -1;
-        }
-        return 0;
-      });
-    }
-    return sortableItems;
-  }, [filteredItems, sortConfig]);
-
-  const requestSort = key => {
-    let direction = 'ascending';
-    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
-      direction = 'descending';
-    }
-    setSortConfig({ key, direction });
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' };
-    return date.toLocaleDateString('en-US', options); // 'en-US' format (MM/DD/YYYY)
-  };
-  
-
   const handleDelete = async (id) => {
     try {
       await deleteDoc(doc(db, "Receiving", id));
@@ -122,6 +88,12 @@ const DisplayReceiving = () => {
     setOpen(true);
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' };
+    return date.toLocaleDateString('en-US', options); // 'en-US' format (MM/DD/YYYY)
+  };
+
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const totalAmount = filteredItems.reduce((acc, item) => acc + (item.Amount || 0), 0);
 
@@ -140,22 +112,15 @@ const DisplayReceiving = () => {
                   <TableHead>Company</TableHead>
                   <TableHead>PO</TableHead>
                   <TableHead>Address</TableHead>
-                  <TableHead>
-                    <Button
-                      variant="ghost"
-                      onClick={() => requestSort('Date')}
-                    >
-                      Date
-                      <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
-                  </TableHead>
+                  <TableHead>Date</TableHead>
                   <TableHead className="hidden sm:table-cell">Name</TableHead>
                   <TableHead className="hidden sm:table-cell">Amount</TableHead>
                   <TableHead className="hidden md:table-cell">Notes</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sortedItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item) => (
+                {filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item) => (
                   <TableRow key={item.id} onClick={() => handleItemClick(item.id, 'receiving')}>
                     <TableCell>
                       <div className="font-medium">{item.Company}</div>

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { db } from "../../config/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp  } from "firebase/firestore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { z } from "zod";
@@ -123,6 +123,7 @@ const AddShippingForm = () => {
         Carrier: data.carrier,
         Shipping: shipping,
         BlindShip: data.blindShip,
+        createdAt: serverTimestamp(), 
       });
       console.log("Document added with ID: ", docRef.id);
       form.reset();

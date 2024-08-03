@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { db } from "../../config/firebase";
-import { getDocs, collection, doc, deleteDoc } from "firebase/firestore";
+import { getDocs, collection, query, orderBy, doc, deleteDoc } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import {
   Card,
@@ -29,21 +29,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import PaginationComponent from '../pagination';
-import EditShippingForm from './editShippingForm'; 
+import EditShippingForm from './editShippingForm';
 
 const DisplayShipping = () => {
   const { searchQuery, handleItemClick } = useOutletContext();
   const [items, setItems] = useState([]);
-  const itemsCollectionRef = collection(db, "Shipping");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [sortConfig, setSortConfig] = useState({ key: 'Date', direction: 'ascending' });
 
   const fetchItems = async () => {
     try {
-      const data = await getDocs(itemsCollectionRef);
+      const itemsQuery = query(collection(db, "Shipping"), orderBy("createdAt", "desc"));
+      const data = await getDocs(itemsQuery);
       const filteredData = data.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
@@ -65,38 +64,6 @@ const DisplayShipping = () => {
     (item.Date?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
-  const sortedItems = React.useMemo(() => {
-    let sortableItems = [...filteredItems];
-    if (sortConfig !== null) {
-      sortableItems.sort((a, b) => {
-        const dateA = new Date(a[sortConfig.key]);
-        const dateB = new Date(b[sortConfig.key]);
-        if (dateA < dateB) {
-          return sortConfig.direction === 'ascending' ? -1 : 1;
-        }
-        if (dateA > dateB) {
-          return sortConfig.direction === 'ascending' ? 1 : -1;
-        }
-        return 0;
-      });
-    }
-    return sortableItems;
-  }, [filteredItems, sortConfig]);
-
-  const requestSort = key => {
-    let direction = 'ascending';
-    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
-      direction = 'descending';
-    }
-    setSortConfig({ key, direction });
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' };
-    return date.toLocaleDateString('en-US', options); // 'en-US' format (MM/DD/YYYY)
-  };
-
   const handleDelete = async (id) => {
     try {
       await deleteDoc(doc(db, "Shipping", id));
@@ -108,7 +75,7 @@ const DisplayShipping = () => {
   };
 
   const handlePageChange = (page) => {
-    if (page >= 1 && page <= Math.ceil(items.length / itemsPerPage)) {
+    if (page >= 1 && page <= Math.ceil(filteredItems.length / itemsPerPage)) {
       setCurrentPage(page);
     }
   };
@@ -119,7 +86,13 @@ const DisplayShipping = () => {
     setOpen(true);
   };
 
-  const totalPages = Math.ceil(items.length / itemsPerPage);
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' };
+    return date.toLocaleDateString('en-US', options); // 'en-US' format (MM/DD/YYYY)
+  };
+
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const totalAmount = filteredItems.reduce((acc, item) => acc + (item.Amount || 0), 0);
 
   return (
@@ -136,22 +109,15 @@ const DisplayShipping = () => {
                 <TableRow>
                   <TableHead>Company</TableHead>
                   <TableHead>PO</TableHead>
-                  <TableHead>
-                    <Button
-                      variant="ghost"
-                      onClick={() => requestSort('Date')}
-                    >
-                      Date
-                      <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
-                  </TableHead>
+                  <TableHead>Date</TableHead>
                   <TableHead className="hidden sm:table-cell">Name</TableHead>
                   <TableHead className="hidden sm:table-cell">Amount</TableHead>
                   <TableHead className="hidden md:table-cell">Notes</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sortedItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item) => (
+                {filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item) => (
                   <TableRow key={item.id} onClick={() => handleItemClick(item.id, 'shipping')}>
                     <TableCell>
                       <div className="font-medium">{item.Company}</div>
@@ -252,7 +218,7 @@ const DisplayShipping = () => {
           setOpen={setOpen}
           selectedItem={selectedItem}
           setSelectedItem={setSelectedItem}
-          refreshItems={fetchItems} // Pass refresh function here
+          refreshItems={fetchItems}
         />
       )}
     </div>
