@@ -115,6 +115,9 @@ const DisplayItem = () => {
               )}
             </div>
             <div>Tracking #: {item?.Tracking}</div>
+            <div>Carrier #: {item?.Carrier}</div>
+            <div>Shipping Cost: ${item?.Shipping}</div>
+            <div>Blind Shipping: {item?.BlindShip ? 'Yes' : 'No'}</div>
             <div>Address: {item?.Address}</div>
             <div>Notes: {item?.Notes}</div>
           </>

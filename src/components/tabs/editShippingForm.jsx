@@ -103,7 +103,7 @@ const EditShippingForm = ({ open, setOpen, selectedItem, setSelectedItem, refres
         date: selectedItem.Date,
         notes: selectedItem.Notes,
         carrier: selectedItem.Carrier,
-        shipping: selectedItem.Shipping.toString(),
+        shipping: (selectedItem.Shipping ?? 0).toString(),
         blindShip: selectedItem.BlindShip,
       });
     }

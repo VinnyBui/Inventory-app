@@ -23,6 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { db } from "../../config/firebase";
 import { doc, updateDoc } from "firebase/firestore";
+import { Switch } from "@/components/ui/switch";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -47,6 +48,14 @@ const FormSchema = z.object({
   serial: z.array(z.string().optional()).optional(),
   tracking: z.string().optional(),
   address: z.string().optional(),
+  carrier: z.string().optional(),
+  shipping: z.preprocess(
+    (val) => (typeof val === "string" ? parseFloat(val) : val),
+    z.number().min(0, {
+      message: "Shipping must be a valid number.",
+    })
+  ),
+  blindShip: z.boolean().optional(),
 });
 
 const handleKeyDown = (e) => {
@@ -68,6 +77,9 @@ const EditReceivingForm = ({ open, setOpen, selectedItem, setSelectedItem, refre
       date: "",
       notes: "",
       address: "",
+      carrier: "",
+      shipping: "",
+      blindShip: false,
     },
   });
 
@@ -89,6 +101,9 @@ const EditReceivingForm = ({ open, setOpen, selectedItem, setSelectedItem, refre
         date: selectedItem.Date,
         notes: selectedItem.Notes,
         address: selectedItem.Address,
+        carrier: selectedItem.Carrier,
+        shipping: (selectedItem.Shipping ?? 0).toString(),
+        blindShip: selectedItem.BlindShip,
       });
     }
   }, [selectedItem, reset]);
@@ -139,6 +154,9 @@ const EditReceivingForm = ({ open, setOpen, selectedItem, setSelectedItem, refre
           Date: data.date,
           Notes: data.notes,
           Address: data.address,
+            Carrier: data.carrier,
+          Shipping: Number(data.shipping),
+          BlindShip: data.blindShip,
         });
         methods.reset();
         toast({
@@ -280,12 +298,60 @@ const EditReceivingForm = ({ open, setOpen, selectedItem, setSelectedItem, refre
             />
             <FormField
               control={methods.control}
+              name="carrier"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Carrier#</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
               name="date"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Date</FormLabel>
                   <FormControl>
                     <Input type="date" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
+              name="shipping"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Shipping Cost</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                        $
+                      </span>
+                      <Input
+                        {...field}
+                        type="number"
+                        className="pl-8"
+                        step="0.01"
+                      />
+                    </div>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={methods.control}
+              name="blindShip"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Blind Shipping</FormLabel>
+                  <FormControl>
+                    <div className="relative py-2">
+                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                    </div>
                   </FormControl>
                 </FormItem>
               )}
