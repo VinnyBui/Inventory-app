@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import PaginationComponent from '../pagination';
 import EditReceivingForm from './editReceivingForm'; 
+import ConfirmationDialog from '../confirmationDialog';
 
 const DisplayReceiving = () => {
   const { searchQuery, handleItemClick } = useOutletContext();
@@ -38,6 +39,8 @@ const DisplayReceiving = () => {
   const itemsPerPage = 10;
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null); 
 
   const fetchItems = async () => {
     try {
@@ -220,7 +223,8 @@ const DisplayReceiving = () => {
                           <DropdownMenuItem
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleDelete(item.id);
+                              setItemToDelete(item); // Set the item to delete
+                              setConfirmDeleteOpen(true); // Open the dialog
                             }}
                           >
                             Delete
@@ -247,6 +251,18 @@ const DisplayReceiving = () => {
           selectedItem={selectedItem}
           setSelectedItem={setSelectedItem}
           refreshItems={fetchItems} 
+        />
+      )}
+      {itemToDelete && (
+        <ConfirmationDialog
+          open={confirmDeleteOpen}
+          onClose={() => setConfirmDeleteOpen(false)}
+          onConfirm={() => {
+            handleDelete(itemToDelete.id);
+            setConfirmDeleteOpen(false);
+            setItemToDelete(null);
+          }}
+          itemName={itemToDelete.Name}
         />
       )}
     </div>

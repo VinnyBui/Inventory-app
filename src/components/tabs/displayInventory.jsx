@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import PaginationComponent from '../pagination';
 import EditInventoryForm from './editInventoryForm';
-
+import ConfirmationDialog from '../confirmationDialog'; 
 const DisplayInventory = () => {
   const { searchQuery, handleItemClick } = useOutletContext();
   const [items, setItems] = useState([]);
@@ -40,6 +40,8 @@ const DisplayInventory = () => {
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [sortConfig, setSortConfig] = useState({ key: 'Name', direction: 'ascending' });
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false); 
+  const [itemToDelete, setItemToDelete] = useState(null); 
 
   const fetchItems = async () => {
     try {
@@ -191,7 +193,8 @@ const DisplayInventory = () => {
                         <DropdownMenuItem
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleDelete(item.id);
+                            setItemToDelete(item); // Set the item to delete
+                            setConfirmDeleteOpen(true); // Open the dialog
                           }}
                         >
                           Delete
@@ -217,6 +220,18 @@ const DisplayInventory = () => {
           selectedItem={selectedItem}
           setSelectedItem={setSelectedItem}
           refreshItems={fetchItems} // Pass refresh function here
+        />
+      )}
+      {itemToDelete && (
+        <ConfirmationDialog
+          open={confirmDeleteOpen}
+          onClose={() => setConfirmDeleteOpen(false)}
+          onConfirm={() => {
+            handleDelete(itemToDelete.id);
+            setConfirmDeleteOpen(false);
+            setItemToDelete(null);
+          }}
+          itemName={itemToDelete.Name}
         />
       )}
     </div>
