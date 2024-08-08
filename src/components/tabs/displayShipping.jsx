@@ -32,11 +32,17 @@ import PaginationComponent from '../pagination';
 import EditShippingForm from './editShippingForm';
 import ConfirmationDialog from '../confirmationDialog';
 
+const truncateTextByCharacters = (text, charLimit) => {
+  if (!text) return '';
+  if (text.length <= charLimit) return text;
+  return text.slice(0, charLimit) + '...';
+};
+
 const DisplayShipping = () => {
   const { searchQuery, handleItemClick } = useOutletContext();
   const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 8;
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false); 
@@ -129,7 +135,9 @@ const DisplayShipping = () => {
                     <TableCell>{formatDate(item.Date)}</TableCell>
                     <TableCell className="hidden sm:table-cell">{item.Name}</TableCell>
                     <TableCell className="hidden sm:table-cell">{item.Amount}</TableCell>
-                    <TableCell className="hidden md:table-cell">{item.Notes || 'N/A'}</TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      {truncateTextByCharacters(item.Notes, 20) || 'N/A'}
+                    </TableCell>
                     <TableCell className="text-right flex justify-end">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>

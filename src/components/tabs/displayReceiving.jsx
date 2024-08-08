@@ -32,11 +32,17 @@ import PaginationComponent from '../pagination';
 import EditReceivingForm from './editReceivingForm'; 
 import ConfirmationDialog from '../confirmationDialog';
 
+const truncateTextByCharacters = (text, charLimit) => {
+  if (!text) return '';
+  if (text.length <= charLimit) return text;
+  return text.slice(0, charLimit) + '...';
+};
+
 const DisplayReceiving = () => {
   const { searchQuery, handleItemClick } = useOutletContext();
   const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 8;
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
@@ -44,7 +50,6 @@ const DisplayReceiving = () => {
 
   const fetchItems = async () => {
     try {
-      // Query to order items by "createdAt" in descending order
       const itemsQuery = query(collection(db, "Receiving"), orderBy("createdAt", "desc"));
       const data = await getDocs(itemsQuery);
       const filteredData = data.docs.map((doc) => ({
@@ -94,7 +99,7 @@ const DisplayReceiving = () => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const options = { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' };
-    return date.toLocaleDateString('en-US', options); // 'en-US' format (MM/DD/YYYY)
+    return date.toLocaleDateString('en-US', options);
   };
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
@@ -133,7 +138,9 @@ const DisplayReceiving = () => {
                     <TableCell>{formatDate(item.Date)}</TableCell>
                     <TableCell className="hidden sm:table-cell">{item.Name}</TableCell>
                     <TableCell className="hidden sm:table-cell">{item.Amount}</TableCell>
-                    <TableCell className="hidden md:table-cell">{item.Notes || 'N/A'}</TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      {truncateTextByCharacters(item.Notes, 25) || 'N/A'}
+                    </TableCell>
                     <TableCell className="text-right flex justify-end">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -223,8 +230,8 @@ const DisplayReceiving = () => {
                           <DropdownMenuItem
                             onClick={(e) => {
                               e.stopPropagation();
-                              setItemToDelete(item); // Set the item to delete
-                              setConfirmDeleteOpen(true); // Open the dialog
+                              setItemToDelete(item);
+                              setConfirmDeleteOpen(true);
                             }}
                           >
                             Delete
