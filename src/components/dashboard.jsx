@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { auth } from '../config/firebase';
-import { ModeToggle } from './mode-toggle';
-import { useNavigate, Link, Outlet, useLocation } from 'react-router-dom';
-import Breadcrumbs from './breadCrumbs';
+import { useState, useEffect } from "react";
+import { auth } from "../config/firebase";
+import { ModeToggle } from "./mode-toggle";
+import { useNavigate, Link, Outlet, useLocation } from "react-router-dom";
+import Breadcrumbs from "./breadCrumbs";
 import {
   CircleUser,
   Home,
@@ -27,12 +27,13 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
-  const [selectedTab, setSelectedTab] = useState('dashboard');
+  const [selectedTab, setSelectedTab] = useState("dashboard");
   const [inventoryExpanded, setInventoryExpanded] = useState(false);
   const [shippingExpanded, setShippingExpanded] = useState(false);
   const [receivingExpanded, setReceivingExpanded] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedItemId, setSelectedItemId] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -50,33 +51,33 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    const path = location.pathname.split('/')[1];
-    setSelectedTab(path || 'dashboard');
+    const path = location.pathname.split("/")[1];
+    setSelectedTab(path || "dashboard");
   }, [location]);
 
   const handleLogout = async () => {
     try {
       await auth.signOut();
-      navigate('/authorize');
+      navigate("/authorize");
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error("Error signing out:", error);
     }
   };
 
   const handleSelection = (item) => {
     setSelectedTab(item);
     setSelectedItemId(null); // Reset selected item when tab changes
-    if (['inventory', 'add'].includes(item)) {
+    if (["inventory", "add"].includes(item)) {
       setInventoryExpanded(true);
     } else {
       setInventoryExpanded(false);
     }
-    if (['shipping', 'addShipping'].includes(item)) { 
+    if (["shipping", "addShipping"].includes(item)) {
       setShippingExpanded(true);
     } else {
       setShippingExpanded(false);
     }
-    if (['receiving', 'addReceiving'].includes(item)) { 
+    if (["receiving", "addReceiving"].includes(item)) {
       setReceivingExpanded(true);
     } else {
       setReceivingExpanded(false);
@@ -87,7 +88,7 @@ const Dashboard = () => {
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
     const params = new URLSearchParams(location.search);
-    params.set('search', e.target.value);
+    params.set("search", e.target.value);
     navigate(`${location.pathname}?${params.toString()}`);
   };
 
@@ -97,148 +98,168 @@ const Dashboard = () => {
   };
 
   const getBreadcrumbItems = () => {
-    const items = [
-      { label: 'Dashboard', link: '/dashboard' },
-    ];
+    const items = [{ label: "Dashboard", link: "/dashboard" }];
 
     switch (selectedTab) {
-      case 'inventory':
-        items.push({ label: 'Inventory', link: '/inventory' });
+      case "inventory":
+        items.push({ label: "Inventory", link: "/inventory" });
         break;
-      case 'add':
-        items.push({ label: 'Inventory', link: '/inventory' });
-        items.push({ label: 'Add Item', link: '/add' });
+      case "add":
+        items.push({ label: "Inventory", link: "/inventory" });
+        items.push({ label: "Add Item", link: "/add" });
         break;
-      case 'shipping':
-        items.push({ label: 'Shipping', link: '/shipping' });
+      case "shipping":
+        items.push({ label: "Shipping", link: "/shipping" });
         break;
-      case 'addShipping':
-        items.push({ label: 'Shipping', link: '/shipping' });
-        items.push({ label: 'Add Shipping', link: '/addShipping' });
+      case "addShipping":
+        items.push({ label: "Shipping", link: "/shipping" });
+        items.push({ label: "Add Shipping", link: "/addShipping" });
         break;
-      case 'receiving':
-        items.push({ label: 'Receiving', link: '/receiving' });
+      case "receiving":
+        items.push({ label: "Receiving", link: "/receiving" });
         break;
-      case 'addReceiving':
-        items.push({ label: 'Receiving', link: '/receiving' });
-        items.push({ label: 'Add Receiving', link: '/addReceiving' });
+      case "addReceiving":
+        items.push({ label: "Receiving", link: "/receiving" });
+        items.push({ label: "Add Receiving", link: "/addReceiving" });
         break;
       default:
         break;
     }
 
     if (selectedItemId) {
-      items.push({ label: 'Item Details', link: `/item/${selectedTab}/${selectedItemId}` });
+      items.push({
+        label: "Item Details",
+        link: `/item/${selectedTab}/${selectedItemId}`,
+      });
     }
 
     return items;
   };
 
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      <div className="hidden border-none bg-muted/40 md:block">
-        <div className="flex h-full max-h-screen flex-col gap-2">
-          <div className="flex h-14 items-center border-none px-4 lg:h-[60px] lg:px-6">
+    <div className="grid min-h-screen w-full md:grid-cols-[auto_1fr] lg:grid-cols-[auto_1fr]">
+      <div
+        className={`hidden md:block ${
+          isSidebarOpen ? "w-56" : "w-16"
+        } transition-all duration-300`}
+        onMouseEnter={() => setIsSidebarOpen(true)}
+        onMouseLeave={() => setIsSidebarOpen(false)}
+      >
+        <div className="h-full max-h-screen flex flex-col gap-2 bg-muted/40 border-none">
+          <div className="flex h-14 items-center px-4 lg:h-[60px] lg:px-6">
             <Link to="/" className="flex items-center gap-2 font-semibold">
               <ActivityIcon className="h-6 w-6" />
-              <span className="">WeBuyCisco</span>
+              <span className={`${isSidebarOpen ? "inline" : "hidden"}`}>
+                WeBuyCisco
+              </span>
             </Link>
-            <div className="ml-auto h-8 w-10 flex items-center justify-center">
-              <ModeToggle />
-            </div>
           </div>
           <div className="flex-1">
-            <nav className="grid items-start px-2 text-sm font-medium lg:px-4 ">
+            <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
               <Link
                 to="/dashboard"
-                onClick={() => handleSelection('dashboard')}
+                onClick={() => handleSelection("dashboard")}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                  selectedTab === 'dashboard'
-                    ? 'bg-muted text-primary'
-                    : 'text-muted-foreground hover:text-primary'
+                  selectedTab === "dashboard"
+                    ? "bg-muted text-primary"
+                    : "text-muted-foreground hover:text-primary"
                 }`}
               >
                 <Home className="h-4 w-4" />
-                Dashboard
+                <span className={`${isSidebarOpen ? "inline" : "hidden"}`}>
+                  Dashboard
+                </span>
               </Link>
               <Link
                 to={`/inventory?search=${searchQuery}`}
-                onClick={() => handleSelection('inventory')}
+                onClick={() => handleSelection("inventory")}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                  selectedTab === 'inventory'
-                    ? 'bg-muted text-primary'
-                    : 'text-muted-foreground hover:text-primary'
+                  selectedTab === "inventory"
+                    ? "bg-muted text-primary"
+                    : "text-muted-foreground hover:text-primary"
                 }`}
               >
                 <Package className="h-4 w-4" />
-                Inventory
+                <span className={`${isSidebarOpen ? "inline" : "hidden"}`}>
+                  Inventory
+                </span>
               </Link>
               {inventoryExpanded && (
                 <div className="ml-6">
                   <Link
                     to={`/add?search=${searchQuery}`}
-                    onClick={() => handleSelection('add')}
+                    onClick={() => handleSelection("add")}
                     className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                      selectedTab === 'add'
-                        ? 'bg-muted text-primary'
-                        : 'text-muted-foreground hover:text-primary'
+                      selectedTab === "add"
+                        ? "bg-muted text-primary"
+                        : "text-muted-foreground hover:text-primary"
                     }`}
                   >
-                    Add
+                    <span className={`${isSidebarOpen ? "inline" : "hidden"}`}>
+                      Add
+                    </span>
                   </Link>
                 </div>
               )}
               <Link
                 to={`/shipping?search=${searchQuery}`}
-                onClick={() => handleSelection('shipping')}
+                onClick={() => handleSelection("shipping")}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                  selectedTab === 'shipping'
-                    ? 'bg-muted text-primary'
-                    : 'text-muted-foreground hover:text-primary'
+                  selectedTab === "shipping"
+                    ? "bg-muted text-primary"
+                    : "text-muted-foreground hover:text-primary"
                 }`}
               >
                 <Package2 className="h-4 w-4" />
-                Shipping
+                <span className={`${isSidebarOpen ? "inline" : "hidden"}`}>
+                  Shipping
+                </span>
               </Link>
               {shippingExpanded && (
                 <div className="ml-6">
                   <Link
                     to={`/addShipping?search=${searchQuery}`}
-                    onClick={() => handleSelection('addShipping')}
+                    onClick={() => handleSelection("addShipping")}
                     className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                      selectedTab === 'addShipping'
-                        ? 'bg-muted text-primary'
-                        : 'text-muted-foreground hover:text-primary'
+                      selectedTab === "addShipping"
+                        ? "bg-muted text-primary"
+                        : "text-muted-foreground hover:text-primary"
                     }`}
                   >
-                    Add
+                    <span className={`${isSidebarOpen ? "inline" : "hidden"}`}>
+                      Add
+                    </span>
                   </Link>
                 </div>
               )}
               <Link
                 to={`/receiving?search=${searchQuery}`}
-                onClick={() => handleSelection('receiving')}
+                onClick={() => handleSelection("receiving")}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                  selectedTab === 'receiving'
-                    ? 'bg-muted text-primary'
-                    : 'text-muted-foreground hover:text-primary'
+                  selectedTab === "receiving"
+                    ? "bg-muted text-primary"
+                    : "text-muted-foreground hover:text-primary"
                 }`}
               >
                 <PackageOpen className="h-4 w-4" />
-                Receiving
+                <span className={`${isSidebarOpen ? "inline" : "hidden"}`}>
+                  Receiving
+                </span>
               </Link>
               {receivingExpanded && (
                 <div className="ml-6">
                   <Link
                     to={`/addReceiving?search=${searchQuery}`}
-                    onClick={() => handleSelection('addReceiving')}
+                    onClick={() => handleSelection("addReceiving")}
                     className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                      selectedTab === 'addReceiving'
-                        ? 'bg-muted text-primary'
-                        : 'text-muted-foreground hover:text-primary'
+                      selectedTab === "addReceiving"
+                        ? "bg-muted text-primary"
+                        : "text-muted-foreground hover:text-primary"
                     }`}
                   >
-                    Add
+                    <span className={`${isSidebarOpen ? "inline" : "hidden"}`}>
+                      Add
+                    </span>
                   </Link>
                 </div>
               )}
@@ -262,16 +283,16 @@ const Dashboard = () => {
             <SheetContent side="left" className="flex flex-col">
               <nav className="grid gap-4 text-lg font-medium">
                 <Link
-                    to="/"
-                    className="flex items-center gap-2 text-lg font-semibold"
-                  >
+                  to="/"
+                  className="flex items-center gap-2 text-lg font-semibold"
+                >
                   <Package2 className="h-6 w-6" />
                   <span className="">WeBuyCisco</span>
                 </Link>
                 <hr className="my-2 border-t border-gray-200" />
                 <Link
                   to="/dashboard"
-                  onClick={() => handleSelection('dashboard')}
+                  onClick={() => handleSelection("dashboard")}
                   className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
                 >
                   <Home className="h-5 w-5" />
@@ -279,7 +300,7 @@ const Dashboard = () => {
                 </Link>
                 <Link
                   to={`/inventory?search=${searchQuery}`}
-                  onClick={() => handleSelection('inventory')}
+                  onClick={() => handleSelection("inventory")}
                   className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
                 >
                   <Package className="h-5 w-5" />
@@ -289,11 +310,11 @@ const Dashboard = () => {
                   <div className="ml-6">
                     <Link
                       to={`/add?search=${searchQuery}`}
-                      onClick={() => handleSelection('add')}
+                      onClick={() => handleSelection("add")}
                       className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                        selectedTab === 'add'
-                          ? 'bg-muted text-primary'
-                          : 'text-muted-foreground hover:text-primary'
+                        selectedTab === "add"
+                          ? "bg-muted text-primary"
+                          : "text-muted-foreground hover:text-primary"
                       }`}
                     >
                       Add
@@ -302,7 +323,7 @@ const Dashboard = () => {
                 )}
                 <Link
                   to={`/shipping?search=${searchQuery}`}
-                  onClick={() => handleSelection('shipping')}
+                  onClick={() => handleSelection("shipping")}
                   className={`mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground`}
                 >
                   <Package2 className="h-5 w-5" />
@@ -312,11 +333,11 @@ const Dashboard = () => {
                   <div className="ml-6">
                     <Link
                       to={`/addShipping?search=${searchQuery}`}
-                      onClick={() => handleSelection('addShipping')}
+                      onClick={() => handleSelection("addShipping")}
                       className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                        selectedTab === 'addShipping'
-                          ? 'bg-muted text-primary'
-                          : 'text-muted-foreground hover:text-primary'
+                        selectedTab === "addShipping"
+                          ? "bg-muted text-primary"
+                          : "text-muted-foreground hover:text-primary"
                       }`}
                     >
                       Add
@@ -325,7 +346,7 @@ const Dashboard = () => {
                 )}
                 <Link
                   to={`/receiving?search=${searchQuery}`}
-                  onClick={() => handleSelection('receiving')}
+                  onClick={() => handleSelection("receiving")}
                   className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
                 >
                   <PackageOpen className="h-5 w-5" />
@@ -335,11 +356,11 @@ const Dashboard = () => {
                   <div className="ml-6">
                     <Link
                       to={`/addReceiving?search=${searchQuery}`}
-                      onClick={() => handleSelection('addReceiving')}
+                      onClick={() => handleSelection("addReceiving")}
                       className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                        selectedTab === 'addReceiving'
-                          ? 'bg-muted text-primary'
-                          : 'text-muted-foreground hover:text-primary'
+                        selectedTab === "addReceiving"
+                          ? "bg-muted text-primary"
+                          : "text-muted-foreground hover:text-primary"
                       }`}
                     >
                       Add
@@ -373,7 +394,15 @@ const Dashboard = () => {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+              <DropdownMenuItem>
+                <div className="flex items-center">
+                  <span className="mr-2">Theme:</span>
+                  <ModeToggle />
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>
+                Logout
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
