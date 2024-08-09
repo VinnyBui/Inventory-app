@@ -70,7 +70,7 @@ const DisplayShipping = () => {
     (item.Name?.toLowerCase().includes(searchQuery.toLowerCase())) ||
     (item.Company?.toLowerCase().includes(searchQuery.toLowerCase())) ||
     (item.PO?.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (item.Date?.toLowerCase().includes(searchQuery.toLowerCase()))
+    (item.Serial?.some(serial => serial.toLowerCase().includes(searchQuery.toLowerCase())))
   );
 
   const handleDelete = async (id) => {
