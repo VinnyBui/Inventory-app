@@ -141,11 +141,11 @@ const Dashboard = () => {
       <div
         className={`hidden md:block ${
           isSidebarOpen ? "w-56" : "w-16"
-        } transition-all duration-300`}
+        } transition-all duration-300 h-full bg-muted/40` }
         onMouseEnter={() => setIsSidebarOpen(true)}
         onMouseLeave={() => setIsSidebarOpen(false)}
       >
-        <div className="h-full max-h-screen flex flex-col gap-2 bg-muted/40 border-none">
+        <div className="h-full max-h-screen flex flex-col gap-2 border-none">
           <div className="flex h-14 items-center px-4 lg:h-[60px] lg:px-6">
             <Link to="/" className="flex items-center gap-2 font-semibold">
               <ActivityIcon className="h-6 w-6" />
